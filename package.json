@@ -1,14 +1,14 @@
 {
   "name": "pointercrate_bot",
   "version": "1.0.0",
-  "description": "",
+  "description": "Discord bot to display Pointercrate information",
   "main": "index.js",
   "scripts": {
     "run": "index.js"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Zukaritasu",
+  "license": "MIT",
   "dependencies": {
     "discord.js": "^14.6.0",
     "node-fetch": "^3.3.1",
