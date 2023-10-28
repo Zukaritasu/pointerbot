@@ -19,69 +19,100 @@ const https = require('https');
 const utils = require('./utils');
 const { urls } = require('../resource.json');
 
-module.exports = {
 
-	/**
-	 * Returns a JSON that is the result of an HTTP request to the Pointercrate REST api
-	 * 
-	 * @param path the API path
-	 * @returns json
-	 */
-	getResponseJSON(path) {
-		return new Promise(function (resolve, reject) {
-			https.get(`${urls.pointercrate}${path}`, res => {
-				let data = [];
-				res.on('data', chunk => { data.push(chunk); });
-				res.on('end', () => { resolve(JSON.parse(Buffer.concat(data).toString())); });
-				res.on('error', err => { reject(err); })
+function getResponseJSON(path) {
+	return new Promise(function (resolve, reject) {
+		https.get(`${urls.pointercrate}${path}`, res => {
+			let data = [];
+			res.on('data', chunk => { data.push(chunk); });
+			res.on('end', () =>
+			{ 
+				const data_json = JSON.parse(Buffer.concat(data).toString());
+				let pageMap = new Map();
+				if ('links' in res.headers) {
+					const pages = res.headers['links'].split(',');
+					for (var i = 0; i < pages.length; i++) {
+						const pageSearch = pages[i].split(';')
+						if (pageSearch.length == 2) {
+							pageMap.set(pageSearch[1].split('=')[1], pageSearch[0].replace('<', '').replace('>', ''));
+						}
+                    }
+                }
+
+				resolve({
+					data: data_json,
+					page: pageMap
+				})
 			});
+			res.on('error', err => { reject(err); })
 		});
-	},
+	});
+}
 
-	/**
-	 * Assigns a style to the demon name according to the position in the list
-	 * 
-	 * @param demon object (Json) containing demon information
-	 * @returns name
-	 */
-	getDemonFormatName(demon) {
-		return demon.position <= 75 ? `**${demon.name}**` : 
-			demon.position > 150 ? demon.name : `*${demon.name}*`;
-	},
+function getDemonFormatName(demon) {
+	return demon.position <= 75 ? `**${demon.name}**` : 
+		demon.position > 150 ? demon.name : `*${demon.name}*`;
+}
 
-	/**
-	 * Returns a JSON with all the progress of the player
-	 * 
-	 * @param player_id 
-	 * @returns 
-	 */
-	async getPlayerAllProgress(player_id) {
-		// 'after' changes according to the position of the demon in the list
-		let demons = [];
-		const records_json = await getResponseJSON(`api/v1/records/?limit=100&after=0&player=${player_id}`);
-		for (const record of records_json) {
-			demons.push({
-				name: getDemonFormatName(record.demon),
-				progress: record.progress,
-				position: record.demon.position
-			});
+/**
+ * Returns all demons completed, to be completed and demons verified.
+ * 
+ * @param {*} player_id Player id
+ * @returns 
+ */
+async function getPlayerAllProgress(player_id) {
+	let demons = [];
+	let after = 0;
+
+	let responseData = await getResponseJSON(`api/v1/records/?limit=100&after=${after}&player=${player_id}`);
+
+	while (true) {
+		for (const record of responseData.data) {
+			demons.push(
+				{
+					name: getDemonFormatName(record.demon),
+					progress: record.progress,
+					position: record.demon.position,
+					verifier: false
+				}
+			);
 		}
-		return demons;
-	},
 
-	/**
-	 * Searches for the first victor, formats the text and returns it.
-	 * If the first victor is not achieved then it returns unknown
-	 * 
-	 * @param demon_position position of the demon in the list
-	 * @param use_trophy indicates whether the trophy should be concatenated
-	 * 		  to the first victor
-	 * @returns 
-	 */
-	async getFirstVictor(demon_position, use_trophy) {
-		const demon_json = await getResponseJSON(`api/v1/records/?progress=100&demon_position=${demon_position}&limit=1`);
-		if (demon_json.length != 0)
-			return utils.getUserNameBanned(demon_json[0].player) + (use_trophy ? ' :trophy:' : '');
-		return 'unknown';
+		if (responseData.page.get('next') == undefined)
+			break;
+		responseData = await getResponseJSON(responseData.page.get('next'));
+    }
+
+	responseData = await getResponseJSON(`api/v2/demons/listed?verifier_id=${player_id}`);
+	for (const verified of responseData.data) {
+		demons.push(
+			{
+				name: getDemonFormatName(
+					{
+						name: verified.name,
+						position: verified.position
+					}
+				),
+				progress: 100,
+				position: verified.position,
+				verifier: true
+			}
+		);
 	}
+
+	return demons;
+}
+
+async function getFirstVictor(demon_position, use_trophy) {
+	const responseData = await getResponseJSON(`api/v1/records/?progress=100&demon_position=${demon_position}&limit=1`);
+	if (responseData.data.length != 0)
+		return utils.getUserNameBanned(responseData.data[0].player) + (use_trophy ? ' :trophy:' : '');
+	return 'unknown';
+}
+
+module.exports = { 
+	getResponseJSON, 
+	getDemonFormatName, 
+	getPlayerAllProgress, 
+	getFirstVictor 
 };

@@ -34,7 +34,7 @@ const client = new Client({
 	presence: {
 		activities: [
 			{
-				name: 'New Top 1',
+				name: 'Avernus',
 				type: ActivityType.Playing
 			}
 		]
@@ -84,9 +84,9 @@ for (const file of eventFiles) {
 	const filePath = path.join(eventsPath, file);
 	const event = require(filePath);
 	if (event.once) {
-		client.once(event.name, (...args) => event.execute(...args));
+		client.once(event.name, (...args) => event.execute(...args, client));
 	} else {
-		client.on(event.name, (...args) => event.execute(...args));
+		client.on(event.name, (...args) => event.execute(...args, client));
 	}
 }
 

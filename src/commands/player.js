@@ -15,22 +15,141 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const { SlashCommandBuilder, ChatInputCommandInteraction } = require('discord.js');
+const { 
+	SlashCommandBuilder, 
+	EmbedBuilder, 
+	StringSelectMenuBuilder, 
+	StringSelectMenuOptionBuilder, 
+	ActionRowBuilder, 
+	ButtonBuilder,
+	ButtonStyle,
+	ChatInputCommandInteraction
+} = require('discord.js');
+
 const request = require('../request');
 const embed = require('../embeds');
+const util = require('util');
+
+/**
+ * 
+ * @param {any} player
+ * @returns
+ */
+function getPlayerPosition(pos) {
+	return `\`${`${pos}`.padStart(2, '0') }\``
+}
+
+/**
+ * 
+ * 
+ * @param {any} players_json
+ * @param {any} begin
+ * @returns
+ */
+function getListEmbed(players_json, begin) {
+	let description = '';
+	let list_count = 0;
+
+	const comboBox = new StringSelectMenuBuilder()
+		.setCustomId('player')
+		.setPlaceholder('Select a player')
+
+	for (let i = begin; i < players_json.length && i < begin + 10; i++) {
+		const player = players_json[i];
+		list_count++;
+		description += `${ getPlayerPosition(i + 1) } - ${ player.name } *score ${ player.score.toFixed(2) }*\n`;
+		comboBox.addOptions(new StringSelectMenuOptionBuilder()
+			.setLabel(player.name)
+			.setValue(player.name)
+		);
+	}
+
+	const playerListEmbed = new EmbedBuilder()
+		.setColor(0x2F3136)
+		.setAuthor(embed.author)
+		.setTitle('Players')
+		.setDescription(description)
+		.setTimestamp()
+		.setFooter({ text: `PointerBot` });
+
+	let buttonsComponent = new ActionRowBuilder();
+	if (players_json.length > 10) {
+		const backButton = new ButtonBuilder()
+			.setCustomId('back')
+			.setLabel('←')
+			.setStyle(ButtonStyle.Primary)
+			.setDisabled(begin >= 10)
+		const followButton = new ButtonBuilder()
+			.setCustomId('follow')
+			.setLabel('→')
+			.setStyle(ButtonStyle.Primary)
+			.setDisabled(list_count < 10 || begin + 10 >= players_json.length)
+
+		buttonsComponent.addComponents(backButton, followButton);
+	}
+		
+	let comboboxComponent = new ActionRowBuilder();
+	comboboxComponent.addComponents(comboBox);
+
+	return  buttonsComponent.components.length == 0 ? 
+	{ 
+		embeds: [playerListEmbed], 
+		components: [comboboxComponent] 
+	} :
+	{ 
+		embeds: [playerListEmbed], 
+		components: [buttonsComponent, comboboxComponent] 
+	}
+}
+
+/**
+ * 
+ * @param {any} interaction
+ * @param {any} players
+ * @returns
+ */
+async function waitUserResponse(interaction, players) {
+	let begin = 0;
+	let response = await interaction.editReply(getListEmbed(players, begin));
+	while (true) {
+		const collectorFilter = i => i.user.id === interaction.user.id;
+		let confirmation = await response.awaitMessageComponent({ filter: collectorFilter, time: 60000 });
+
+		if (confirmation.customId === 'back') {
+			begin -= 10;
+		} else if (confirmation.customId === 'follow') {
+			begin += 10;
+		} else if (confirmation.customId === 'player') {
+			for (let i = 0; i < players.length; i++) {
+				if (players[i].name === confirmation.values[0]) {
+					return { reply: confirmation, player: players[i], message: null };
+				}
+			}
+		}
+		await confirmation.update(getListEmbed(players, begin))
+	}
+}
 
 /**
  * Get basic info player
  * @param {*} name 
  */
-async function getPlayerJSON(name) {
-	const players_json = await request.getResponseJSON(`api/v1/players/ranking/?name_contains=${ name.replace(' ', '+') }`);
-	for (const player_json of players_json) {
-		if (player_json.name.toLowerCase() == name) {
-			return player_json;
+async function getPlayerForNameJSON(interaction, name) {
+	const responseData = await request.getResponseJSON(`api/v1/players/ranking/?name_contains=${name.replace(' ', '+')}`);
+	const players = responseData.data;
+
+	if ('length' in players && players.length != 0) {
+		if (players.length === 1)
+			return { reply: null, player: players[0], message: null };
+		try {
+			return await waitUserResponse(interaction, players)
+		} catch (error) {
+			console.log(error)
+			return { message: 'No player has been selected from the drop-down menu' };
 		}
 	}
-	return null;
+	
+	return { message: 'Pointercrate API: player does not exist' };
 }
 
 /**
@@ -43,12 +162,20 @@ async function execute(interaction) {
 		if (player == null) {
 			await interaction.reply(`Interaction error: No option entered`);
 		} else {
-			await interaction.deferReply();
-			const player_json = await getPlayerJSON(player.toLowerCase().trim());
-			if (player_json == null) {
-				await interaction.editReply('Pointercrate API: player does not exist');
+			if (interaction instanceof ChatInputCommandInteraction)
+				await interaction.deferReply();
+			const confirm = await getPlayerForNameJSON(interaction, player.toLowerCase().trim());
+			if (confirm.message != null) {
+				await interaction.editReply({ content: confirm.message, embeds: [], components: [] });
 			} else {
-				await interaction.editReply({ embeds: [await embed.getPlayerEmbed(player_json, await request.getPlayerAllProgress(player_json.id))] });
+				const playerEmbed = [
+					await embed.getPlayerEmbed(confirm.player, await request.getPlayerAllProgress(confirm.player.id))
+				]
+				if (confirm.reply != null) {
+					await confirm.reply.update({ embeds: playerEmbed, components: [] });
+				} else {
+					await interaction.editReply({ embeds: playerEmbed });
+				}
 			}
 		}
 	} catch (error) {

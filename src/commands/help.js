@@ -15,11 +15,13 @@
 
 const { SlashCommandBuilder } = require('discord.js');
 
+const helpJson = require('../../help.json');
+
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('help')
 		.setDescription('Show the help of this bot'),
 	async execute(interaction) {
-		await interaction.reply(`help`);
+		await interaction.reply({ embeds: [helpJson] });
 	}
 };

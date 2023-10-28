@@ -24,7 +24,7 @@ const embed = require('../embeds');
  * 
  * @param {*} object 
  */
-async function printMessage(interaction, object) {
+async function replyMessage(interaction, object) {
 	if (interaction instanceof ChatInputCommandInteraction) {
 		await interaction.editReply(object);
 	} else {
@@ -39,13 +39,13 @@ async function printMessage(interaction, object) {
  */
 async function getJSONByPosition(interaction, pos) {
 	if (!(pos > 0 && pos <= 445))
-		await printMessage(interaction, `Interaction error: the entered position '${ pos }' is outside the range 1 - 445`);
+		await replyMessage(interaction, `Interaction error: the entered position '${ pos }' is outside the range 1 - 445`);
 	else {
-		let demon_json = await request.getJSON(`api/v2/demons/listed?limit=1&after=${ --pos }`);
-		if (demon_json.length == 0)
-			await printMessage(interaction, `The level does not exist in Pointercrate or is not registered`);
+		let responseData = await request.getResponseJSON(`api/v2/demons/listed?limit=1&after=${ --pos }`);
+		if (responseData.data.length == 0)
+			await replyMessage(interaction, `The level does not exist in Pointercrate or is not registered`);
 		else
-			return demon_json[0];
+			return responseData.data[0];
 	}
 	return null;
 }
@@ -58,11 +58,11 @@ async function getJSONByPosition(interaction, pos) {
  */
 async function getJSONByName(interaction, name) {
 	const demon_name = name.trim().toLowerCase();
-	const json = await request.getJSON(`api/v2/demons/?name_contains=${ demon_name.replace(' ', '+') }`);
-	if (json.length == 0) {
-		await printMessage(interaction, `The level does not exist in Pointercrate or is not registered`);
+	const responseData = await request.getResponseJSON(`api/v2/demons/?name_contains=${ demon_name.replace(' ', '+') }`);
+	if (responseData.data.length == 0) {
+		await replyMessage(interaction, `The level does not exist in Pointercrate or is not registered`);
 	} else {
-		for (const demon of json) {
+		for (const demon of responseData.data) {
 			if (demon.name.toLowerCase() == demon_name) {
 				return demon;
 			}
@@ -109,11 +109,11 @@ async function execute(interaction) {
 			const demon_json = (typeof option != 'number')  ? 
 			await getJSONByName(interaction, option) : await getJSONByPosition(interaction, option);
 			if (demon_json != null) {
-				await printMessage(interaction, { embeds: [await embed.getDemonEmbed(interaction, demon_json)] });
+				await replyMessage(interaction, { embeds: [await embed.getDemonEmbed(interaction, demon_json)] });
 			}
 		}
 	} catch (error) {
-		await printMessage(interaction, `\`\`\`Internal error: \n${ error }\`\`\``);
+		await replyMessage(interaction, `\`\`\`Internal error: \n${ error }\`\`\``);
 	}
 }
 

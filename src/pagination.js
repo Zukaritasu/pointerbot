@@ -13,65 +13,46 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-const {
-    SlashCommandBuilder,
-    ChatInputCommandInteraction,
-    MessageComponentInteraction
-} = require('discord.js');
+const { ChatInputCommandInteraction, MessageComponentInteraction } = require('discord.js');
 
-const request = require('../request');
-const embeds = require('../embeds');
+const embeds = require('./embeds');
+const request = require('./request');
 
-const PTC_RESPONSE_ERROR = 'Pointercrate API: an error occurred when consulting the list of players in the ranking'
+const PTC_RESPONSE_ERROR = 'Pointercrate API: an error occurred while querying the information on the server'
 
-async function respondInteraction(interaction, page) {
-    const responseData = await request.getResponseJSON(`api/v1/players/ranking/?limit=25&after=${25 * (page - 1)}`);
+async function respondInteraction(interaction, page, after, title, footer) {
+    const responseData = await request.getResponseJSON(`api/v2/demons/listed?limit=25&after=${(25 * (page - 1)) + after }`);
     let result = null;
     let responseError = null;
     let messageEmbed = null;
     if (!(responseData instanceof Error)) {
-        const rankingData = await embeds.getRankingEmbed(responseData, page);
-        messageEmbed = rankingData.message;
-        if (rankingData.content != null) {
-            responseError = rankingData.content;
-        } else if (interaction instanceof MessageComponentInteraction) {
+        messageEmbed = await embeds.getDemonlistEmbed(responseData.data, page, title, footer, after === 150);
+        if (interaction instanceof MessageComponentInteraction) {
             await interaction.update(messageEmbed);
         } else {
             result = await interaction.editReply(messageEmbed);
         }
     }
     else
-        responseError = PTC_RESPONSE_ERROR;
+        responseError = responseData;
     return {
         interaction: result,
-        error: responseError,
+        error: responseError, 
         message: messageEmbed
     }
 }
 
-/**
- * 
- * @param {*} interaction 
- */
-async function execute(interaction) {
-    let pageNumber = interaction.options.getInteger('page', false);
+async function processInteraction(interaction, info) {
     let page = 1;
-
     const collectorFilter = interaction => interaction.user.id === interaction.user.id;
 
-    if (pageNumber != null && pageNumber != undefined) {
-        page = pageNumber;
-        if (page <= 0) {
-            page = 1;
-        }
-    }
     if (interaction instanceof ChatInputCommandInteraction)
         await interaction.deferReply();
 
     let message = null;
-    let response = await respondInteraction(interaction, page);
+    let response = await respondInteraction(interaction, page, info.after, info.title, info.getFooter(page));
     if (response.error != null) {
-        await interaction.editReply(response.error);
+        await interaction.editReply(PTC_RESPONSE_ERROR);
     } else {
         try {
             message = response.message;
@@ -85,11 +66,11 @@ async function execute(interaction) {
                     page--;
                 else if (confirmation.customId === 'follow')
                     page++;
-                const updateResponse = await respondInteraction(confirmation, page);
+                const updateResponse = await respondInteraction(confirmation, page, info.after, info.title, info.getFooter(page));
                 if (updateResponse.error != null) {
                     await confirmation.update(
                         {
-                            content: updateResponse.error,
+                            content: PTC_RESPONSE_ERROR,
                             embeds: [],
                             components: []
                         });
@@ -109,12 +90,4 @@ async function execute(interaction) {
     }
 }
 
-module.exports = {
-	data: new SlashCommandBuilder()
-		.setName('ranking')
-		.setDescription('Shows the ranking of players')
-        .addIntegerOption(option =>
-            option.setName('page')
-                .setDescription('The page number. There are 25 users on each page')),
-	execute
-};
+module.exports = { processInteraction }

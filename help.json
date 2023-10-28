@@ -1,0 +1,37 @@
+{
+  "title": "Help",
+  "color": 3158066,
+  "fields": [
+    {
+      "name": "/main",
+      "value": "Displays a list of the levels that are in the top 75 of the Demonlist."
+    },
+    {
+      "name": "/extended",
+      "value": "Displays a list of the levels that are in the extended list from the range of the top 76 - 150 of the Demonlist."
+    },
+    {
+      "name": "/legacy",
+      "value": "Displays a list of the levels left as a legacy of the Demonlist. These levels are below the top 150"
+    },
+    {
+      "name": "/level",
+      "value": "Searches for a level that is within the Pointercrate register and displays its information.\n\nThe bot requires you to enter the position or name of the level."
+    },
+    {
+      "name": "/player",
+      "value": "Displays the information of a player who is registered in Pointercrate.\n\nThe bot requires you to enter the player's name, and if there are name matches the bot will display a list of names of players registered in Pointercrate."
+    },
+    {
+      "name": "/top",
+      "value": "Displays the current top 1 level of the Demonlist."
+    },
+    {
+      "name": "/ranking",
+      "value": "Displays a list with the ranking of players registered in Pointercrate.\n\nOptionally the bot requires you to enter the page number to display the exact list where the player is located in the ranking."
+    }
+  ],
+  "footer": {
+    "text": "PointerBot"
+  }
+}

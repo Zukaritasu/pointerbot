@@ -19,35 +19,31 @@ const { SlashCommandBuilder, ChatInputCommandInteraction } = require('discord.js
 const request = require('../request');
 const embeds = require('../embeds');
 
-/**
- * 
- * @param {*} object 
- */
-async function printMessage(interaction, object) {
-	if (interaction instanceof ChatInputCommandInteraction) {
-		await interaction.editReply(object);
-	} else {
-		await interaction.reply(object);
-	}
-}
-
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('top')
-		.setDescription('Show top 1'),
+		.setDescription('The top 1 player of the leaderboad'),
 
-	/**
-	 * Execute the command that will show the demon top 1 of the demonlist
-	 * 
-	 * @param interaction 
-	 */
 	async execute(interaction) {
 		if (interaction instanceof ChatInputCommandInteraction)
 			await interaction.deferReply();
-		const json = await request.getJSON('api/v2/demons/listed?limit=1&after=0');
-		await printMessage(interaction, json.length != 0 ? 
-			{ 
-				embeds: [await embeds.getDemonEmbed(interaction, json[0])] 
-			} : 'Pointercrate API has returned an empty field');
+		const responseData = await request.getResponseJSON('api/v2/demons/listed?limit=1&after=0');
+
+		let message;
+		if (responseData.data.length === 0) {
+			message = 'Pointercrate API has returned an empty field'
+		} else {
+			message = {
+				embeds: [
+					await embeds.getDemonEmbed(interaction, responseData.data[0])
+				]
+			}
+		}
+
+		if (interaction instanceof ChatInputCommandInteraction) {
+			await interaction.editReply(message);
+		} else {
+			await interaction.reply(message);
+		}
 	}
 };

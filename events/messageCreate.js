@@ -23,14 +23,14 @@ const prefix = '$'
 module.exports = {
 	name: Events.MessageCreate,
 	once: false,
-	async execute(message) {
-		const content = message.content.trim().toLowerCase();
-        if (content.startsWith(prefix) && content.length > 2) {
-            const msg_parts = content.split(' ');
-            const command = message.client.commands.get(msg_parts[0].substring(prefix.length, msg_parts[0].length));
-            if (command != null) {
-                await command.execute(msg, msg_parts);
-            }
-        }
+	async execute(message, _client) {
+		//const content = message.content.trim().toLowerCase();
+  //      if (content.startsWith(prefix) && content.length > 2) {
+  //          const msg_parts = content.split(' ');
+  //          const command = message.client.commands.get(msg_parts[0].substring(prefix.length, msg_parts[0].length));
+  //          if (command != null) {
+  //              await command.execute(msg, msg_parts);
+  //          }
+  //      }
 	},
 };

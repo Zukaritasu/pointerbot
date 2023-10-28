@@ -15,27 +15,22 @@
 
 const { SlashCommandBuilder } = require('discord.js');
 const embeds = require('../embeds');
+const request = require('../request');
+const pagination = require('../pagination');
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('main')
-		.setDescription('Check the list of demons in the range 1 - 75'),
+		.setDescription('List of main demons in the range 1 - 75'),
 	async execute(interaction) {
-		await interaction.reply(await embeds.getDemonlistEmbed(null));
-		/*await interaction.deferReply();
-		await interaction.editReply(await embeds.getDemonlistEmbed(null));*/
-
-		/*console.log("Holaaaaa");
-		if (!(interaction instanceof ChatInputCommandInteraction)) {
-			console.log("A-A");
-			 interaction.reply( embeds.getDemonlistEmbed(null));
-			console.log("A");
-		} else {
-			console.log("B-B");
-			 
-			console.log("B");
-			 interaction.editReply( embeds.getDemonlistEmbed(null));
-			console.log("C");
-		}*/
+		await pagination.processInteraction(interaction,
+			{
+				after: 0,
+				title: 'Top 75',
+				getFooter: function (page) {
+					return `Page ${page} of 3`;
+				}
+			}
+		);
 	}
 };

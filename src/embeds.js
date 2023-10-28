@@ -19,30 +19,13 @@ const { EmbedBuilder, APIEmbedField, ActionRowBuilder, ButtonBuilder, ButtonStyl
 const resource = require('./resource');
 const request = require('./request');
 const utils = require('./utils');
-const { urls, emojis } = require('../resource.json');
+const { urls } = require('../resource.json');
 
 
 const author = {
 	name: 'Demonlist',
 	iconURL: urls.demonlist_icon
 };
-
-/**
- * From an array of user demons the function returns an array of
- * 100% completed demons.
- * 
- * @param demons array of demons
- * @returns completed daemons
- */
-function getDemonsCompleted(demons) {
-	if (demons.length == 0)
-		return 'None';
-
-	const completed = demons.filter(demon => demon.progress === 100)
-		.map(demon => demon.name)
-		.join(' - ');
-	return completed || 'None';
-}
 
 /**
  * Returns a formatted string with the number of completed list demons
@@ -54,6 +37,8 @@ function getDemonsCompleted(demons) {
 function getPlayerDemonsCompleted(demons) {
 	let main = 0, extended = 0, legacy = 0;
 	for (const demon of demons) {
+		if (demon.progress != 100)
+			continue;
 		if (demon.position <= 75)
 			main++;
 		else if (demon.position <= 150)
@@ -72,15 +57,17 @@ function getPlayerDemonsCompleted(demons) {
  * @returns string
  */
 function getHardestDemon(demons) {
-	if (demons.length == 0)
-		return 'None';
-	let hardest = { name: null, position: Number.MAX_SAFE_INTEGER };
-	for (const demon of demons) {
-		if (demon.position < hardest.position) {
-			hardest = { name: demon.name + ' ' + resource.getTrophy('demon', demon.position), position: demon.position };
+	let hardest = 'None';
+	if (demons.length != 0) {
+		let position = Number.MAX_SAFE_INTEGER;
+		for (const demon of demons) {
+			if (position > demon.position && demon.progress === 100) {
+				position = demon.position;
+				hardest  = demon.name + ' ' + resource.getTrophy('demon', demon.position);
+			}
 		}
 	}
-	return hardest.name;
+	return hardest;
 }
 
 /**
@@ -94,7 +81,6 @@ function addDemonInField(struct, demon, completed) {
 	if (!completed)
 		demon_name += ' ' + utils.getTextStyleByPosition(`(${demon.progress}%)`, demon.position);
 	if ((struct[1].value.length + demon_name.length) > 1024) {
-		/* a new field is added */
 		struct[0].push({ name: '\u200B', value: '' });
 		if (demon_name.startsWith(' - ')) {
 			demon_name = demon_name.substring(3, demon_name.length);
@@ -110,11 +96,17 @@ function addDemonInField(struct, demon, completed) {
  * @param completed
  * @returns 
  */
-function getFieldsDemons(field_name, demons, completed) {
+function getFieldsDemons(field_name, demons, completed, useVerifier) {
 	if (demons.length == 0)
 		return { name: field_name, value: 'None' };
 	let fields = [{ name: field_name, value: '' }];
 	for (const demon of demons) {
+		if (useVerifier) {
+			if (demon.verifier) {
+				addDemonInField([fields, fields[fields.length - 1]], demon, completed);
+			}
+			continue
+		}
 		if (!((completed && demon.progress != 100) || (!completed && demon.progress == 100))) {
 			addDemonInField([fields, fields[fields.length - 1]], demon, completed);
 		}
@@ -128,6 +120,7 @@ function getFieldsDemons(field_name, demons, completed) {
 
 
 module.exports = {
+	author,
 	async getDemonEmbed(msg, demon) {
 		const demon_embed = new EmbedBuilder()
 			.setColor(0x2F3136)
@@ -142,10 +135,14 @@ module.exports = {
 				{ name: '\u200B',       value: '\u200B', inline: true }
 			)
 			.setThumbnail(resource.getTrophy('extreme', demon.position))
-			.addFields({ name: '\u200B', value: `[Open in Pointercrate :arrow_upper_right:](${urls.pointercrate}demonlist/permalink/${demon.id}/)\n[Open Video :arrow_upper_right:](${demon.video})` })
+			.addFields(
+				{
+					name: '\u200B',
+					value: `[Open in Pointercrate :arrow_upper_right:](${urls.pointercrate}demonlist/permalink/${demon.id}/)\n[Open Video :arrow_upper_right:](${demon.video})`
+				})
 			.setImage(demon.thumbnail)
 			.setTimestamp()
-			.setFooter({ text: `Pointercrate` });
+			.setFooter({ text: `PointerBot` });
 		return demon_embed;
 	},
 
@@ -161,31 +158,90 @@ module.exports = {
 				{ name: 'Hardest demon',   value: getHardestDemon(demons), inline: true }
 			)
 			.setThumbnail(`https://flagcdn.com/h240/${player.nationality.country_code.toLowerCase()}.png`)
-			.addFields(getFieldsDemons('Demons Completed', demons, true))
-			.addFields(getFieldsDemons('Progress on', demons, false))
+			.addFields(getFieldsDemons('Demons Completed', demons, true, false))
+			.addFields(getFieldsDemons('Progress on', demons, false, false))
+			.addFields(getFieldsDemons('Demons verified', demons, true, true))
 			.setTimestamp()
-			.setFooter({ text: `Pointercrate` });
+			.setFooter({ text: `PointerBot` });
 		return demon_embed;
 	},
 
-	async getDemonlistEmbed(demons) {
-		const row = new ActionRowBuilder();
+	async getDemonlistEmbed(demons, page, title, footer_text, legacy) {
+		const row = new ActionRowBuilder()
+			
+		const backButton = new ButtonBuilder()
+			.setCustomId('back')
+			.setLabel('←')
+			.setStyle(ButtonStyle.Primary)
+			.setDisabled(page == 1)
+		const followButton = new ButtonBuilder()
+			.setCustomId('follow')
+			.setLabel('→')
+			.setStyle(ButtonStyle.Primary)
+			.setDisabled((!legacy && page == 3) || demons.length != 25)
+
+		row.addComponents(backButton, followButton);
+
+		let description = (() => {
+			let lines = '';
+			demons.forEach(element => {
+				lines += `${`\`${`${element.position}`.padStart(3, '0')}\`` } - ${ element.name } \n`;
+			});
+			return lines;
+		})();
+
+		const embed = new EmbedBuilder()
+			.setColor(0x2F3136)
+			.setTitle(title)
+			.setDescription(description)
+			.setFooter({ text: footer_text })
+
+		return { embeds: [embed], components: [row] };
+	},
+
+	getRankingEmbed(responseData, page) {
+		if (responseData.data.length === 0) {
+			return {
+				content: 'Pointercrate API: page limit has been reached',
+				message: {
+					embeds: [], components: []
+				}
+			};
+        }
+
+		const row = new ActionRowBuilder()
 
 		const backButton = new ButtonBuilder()
 			.setCustomId('back')
 			.setLabel('←')
-			.setStyle(ButtonStyle.Primary);
+			.setStyle(ButtonStyle.Primary)
+			.setDisabled(page === 1)
 		const followButton = new ButtonBuilder()
 			.setCustomId('follow')
 			.setLabel('→')
-			.setStyle(ButtonStyle.Primary);
+			.setStyle(ButtonStyle.Primary)
+			.setDisabled(responseData.data.length !== 25 || responseData.page.get('next') == undefined)
 
 		row.addComponents(backButton, followButton);
 
-		const embed = new EmbedBuilder()
-			.setTitle('Título del embed')
-			.setDescription('Descripción del embed');
+		let description = (() => {
+			let lines = '';
+			responseData.data.forEach(player => {
+				const country = player.nationality == null ? ':united_nations:' :
+					`:flag_${player.nationality.country_code.toLowerCase()}:`
 
-		return { embeds: [embed], components: [row] };
+				lines += `${country} ${`\`${`${player.rank}`.padStart(3, '0')}\``} - **${player.name}** *${player.score.toFixed(2)}*\n`;
+			});
+			return lines;
+		})();
+
+		const embed = new EmbedBuilder()
+			.setColor(0x2F3136)
+			.setTitle('Leaderboard')
+			.setDescription(description)
+			.setFooter({ text: `Page ${ page }` })
+
+		return { content: null, message: { embeds: [embed], components: [row] } }
+;
 	}
 };

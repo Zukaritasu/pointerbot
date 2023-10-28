@@ -15,17 +15,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const { Events } = require('discord.js');
+const { Events, ActivityType } = require('discord.js');
 
 module.exports = {
     name: Events.InteractionCreate,
     once: false,
-    async execute(interaction) {
+    async execute(interaction, client) {
         if (!interaction.isChatInputCommand())
             return;
         const command = interaction.client.commands.get(interaction.commandName);
         if (command != null) {
-            await command.execute(interaction);
+            await command.execute(interaction, client);
         }
     },
 };
