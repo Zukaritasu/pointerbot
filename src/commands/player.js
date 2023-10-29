@@ -28,24 +28,14 @@ const {
 
 const request = require('../request');
 const embed = require('../embeds');
-const util = require('util');
 
-/**
- * 
- * @param {any} player
- * @returns
- */
+const COUNT_LIST_ELEMENTS = 15;
+
 function getPlayerPosition(pos) {
 	return `\`${`${pos}`.padStart(2, '0') }\``
 }
 
-/**
- * 
- * 
- * @param {any} players_json
- * @param {any} begin
- * @returns
- */
+
 function getListEmbed(players_json, begin) {
 	let description = '';
 	let list_count = 0;
@@ -54,7 +44,7 @@ function getListEmbed(players_json, begin) {
 		.setCustomId('player')
 		.setPlaceholder('Select a player')
 
-	for (let i = begin; i < players_json.length && i < begin + 10; i++) {
+	for (let i = begin; i < players_json.length && i < begin + COUNT_LIST_ELEMENTS; i++) {
 		const player = players_json[i];
 		list_count++;
 		description += `${ getPlayerPosition(i + 1) } - ${ player.name } *score ${ player.score.toFixed(2) }*\n`;
@@ -73,17 +63,17 @@ function getListEmbed(players_json, begin) {
 		.setFooter({ text: `PointerBot` });
 
 	let buttonsComponent = new ActionRowBuilder();
-	if (players_json.length > 10) {
+	if (players_json.length > COUNT_LIST_ELEMENTS) {
 		const backButton = new ButtonBuilder()
 			.setCustomId('back')
 			.setLabel('←')
 			.setStyle(ButtonStyle.Primary)
-			.setDisabled(begin >= 10)
+			.setDisabled(begin < COUNT_LIST_ELEMENTS)
 		const followButton = new ButtonBuilder()
 			.setCustomId('follow')
 			.setLabel('→')
 			.setStyle(ButtonStyle.Primary)
-			.setDisabled(list_count < 10 || begin + 10 >= players_json.length)
+			.setDisabled(list_count < COUNT_LIST_ELEMENTS || begin + COUNT_LIST_ELEMENTS >= players_json.length)
 
 		buttonsComponent.addComponents(backButton, followButton);
 	}
@@ -116,9 +106,9 @@ async function waitUserResponse(interaction, players) {
 		let confirmation = await response.awaitMessageComponent({ filter: collectorFilter, time: 60000 });
 
 		if (confirmation.customId === 'back') {
-			begin -= 10;
+			begin -= COUNT_LIST_ELEMENTS;
 		} else if (confirmation.customId === 'follow') {
-			begin += 10;
+			begin += COUNT_LIST_ELEMENTS;
 		} else if (confirmation.customId === 'player') {
 			for (let i = 0; i < players.length; i++) {
 				if (players[i].name === confirmation.values[0]) {
