@@ -109,7 +109,7 @@ async function execute(interaction) {
 			const demon_json = (typeof option != 'number')  ? 
 			await getJSONByName(interaction, option) : await getJSONByPosition(interaction, option);
 			if (demon_json != null) {
-				await replyMessage(interaction, { embeds: [await embed.getDemonEmbed(interaction, demon_json)] });
+				await replyMessage(interaction, await embed.getDemonEmbed(interaction, demon_json));
 			}
 		}
 	} catch (error) {
