@@ -1,4 +1,4 @@
-# PointBot
+# PointerBot
 It is a bot that displays information about registered Pointercrate players and Demonlist levels. It contains a variety of basic commands to query the necessary information.
 
 The bot currently has no support for executing commands using prefixes, it only supports slash commands /
