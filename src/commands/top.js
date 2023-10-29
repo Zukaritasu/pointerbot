@@ -31,13 +31,9 @@ module.exports = {
 
 		let message;
 		if (responseData.data.length === 0) {
-			message = 'Pointercrate API has returned an empty field'
+			message = 'Pointercrate API: has returned an empty field'
 		} else {
-			message = {
-				embeds: [
-					await embeds.getDemonEmbed(interaction, responseData.data[0])
-				]
-			}
+			message = await embeds.getDemonEmbed(interaction, responseData.data[0]);
 		}
 
 		if (interaction instanceof ChatInputCommandInteraction) {
