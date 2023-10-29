@@ -135,15 +135,29 @@ module.exports = {
 				{ name: '\u200B',       value: '\u200B', inline: true }
 			)
 			.setThumbnail(resource.getTrophy('extreme', demon.position))
-			.addFields(
+			/* .addFields(
 				{
 					name: '\u200B',
 					value: `[Open in Pointercrate :arrow_upper_right:](${urls.pointercrate}demonlist/permalink/${demon.id}/)\n[Open Video :arrow_upper_right:](${demon.video})`
-				})
+				}) */
 			.setImage(demon.thumbnail)
 			.setTimestamp()
 			.setFooter({ text: `PointerBot` });
-		return demon_embed;
+
+		const row = new ActionRowBuilder()
+			
+		const backButton = new ButtonBuilder()
+			.setLabel('Open in Pointercrate')
+			.setURL(`${urls.pointercrate}demonlist/permalink/${demon.id}`)
+			.setStyle(ButtonStyle.Link)
+		const followButton = new ButtonBuilder()
+			.setLabel('Open Video')
+			.setURL(`${demon.video}`)
+			.setStyle(ButtonStyle.Link)
+	
+		row.addComponents(backButton, followButton);
+
+		return { embeds: [demon_embed], components: [row] };
 	},
 
 	async getPlayerEmbed(player, demons) {
