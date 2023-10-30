@@ -15,105 +15,170 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const { SlashCommandBuilder, ChatInputCommandInteraction } = require('discord.js');
+const {
+	SlashCommandBuilder,
+	ChatInputCommandInteraction,
+	StringSelectMenuBuilder,
+	StringSelectMenuOptionBuilder,
+	EmbedBuilder,
+	ActionRowBuilder,
+	ButtonBuilder,
+	ButtonStyle
+} = require('discord.js');
 
 const request = require('../request');
 const embed = require('../embeds');
+const utils = require('../utils');
 
-/**
- * 
- * @param {*} object 
- */
-async function replyMessage(interaction, object) {
-	if (interaction instanceof ChatInputCommandInteraction) {
-		await interaction.editReply(object);
+const COUNT_LIST_ELEMENTS = 15;
+
+function getDemonPosition(pos) {
+	return `\`${`${pos}`.padStart(2, '0')}\``
+}
+
+function getListEmbed(demons, begin) {
+	let description = '';
+	let list_count = 0;
+
+	const comboBox = new StringSelectMenuBuilder()
+		.setCustomId('demon')
+		.setPlaceholder('Select a demon')
+
+	for (let i = begin; i < demons.length && i < begin + COUNT_LIST_ELEMENTS; i++) {
+		const demon = demons[i];
+		list_count++;
+		description += `${getDemonPosition(i + 1)} - ${demon.name} *by ${demon.publisher.name}*\n`;
+		comboBox.addOptions(new StringSelectMenuOptionBuilder()
+			.setLabel(`${demon.name} by ${demon.publisher.name}`)
+			.setValue(`${i}`)
+		);
+	}
+
+	const listEmbed = new EmbedBuilder()
+		.setColor(0x2F3136)
+		.setAuthor(embed.author)
+		.setTitle('Demons')
+		.setDescription(description)
+		.setTimestamp()
+		.setFooter({ text: `PointerBot` });
+
+	let buttonsComponent = new ActionRowBuilder();
+	if (demons.length > COUNT_LIST_ELEMENTS) {
+		const backButton = new ButtonBuilder()
+			.setCustomId('back')
+			.setLabel('←')
+			.setStyle(ButtonStyle.Primary)
+			.setDisabled(begin < COUNT_LIST_ELEMENTS)
+		const followButton = new ButtonBuilder()
+			.setCustomId('follow')
+			.setLabel('→')
+			.setStyle(ButtonStyle.Primary)
+			.setDisabled(list_count < COUNT_LIST_ELEMENTS || begin + COUNT_LIST_ELEMENTS >= demons.length)
+
+		buttonsComponent.addComponents(backButton, followButton);
+	}
+
+	let comboboxComponent = new ActionRowBuilder();
+	comboboxComponent.addComponents(comboBox);
+
+	return buttonsComponent.components.length == 0 ?
+		{
+			embeds: [listEmbed],
+			components: [comboboxComponent]
+		} :
+		{
+			embeds: [listEmbed],
+			components: [buttonsComponent, comboboxComponent]
+		}
+}
+
+async function getDemonJSON(value) {
+	let query = (typeof value === 'number') ? `api/v2/demons/listed?limit=1&after=${--value}` :
+		`api/v2/demons/?name_contains=${value.trim().toLowerCase().replace(' ', '+')}`;
+	const responseData = await request.getResponseJSON(query);
+	if (responseData instanceof Error) {
+		return {
+			error: true
+		}
 	} else {
-		await interaction.reply(object);
+		return {
+			error: false,
+			data: responseData.data
+		}
 	}
 }
 
-/**
- * 
- * @param {*} interaction 
- * @param {*} pos 
- */
-async function getJSONByPosition(interaction, pos) {
-	if (!(pos > 0 && pos <= 445))
-		await replyMessage(interaction, `Interaction error: the entered position '${ pos }' is outside the range 1 - 445`);
-	else {
-		let responseData = await request.getResponseJSON(`api/v2/demons/listed?limit=1&after=${ --pos }`);
-		if (responseData.data.length == 0)
-			await replyMessage(interaction, `The level does not exist in Pointercrate or is not registered`);
-		else
-			return responseData.data[0];
-	}
-	return null;
-}
+async function waitResponseMessage(interaction, demonJson) {
+	let begin = 0;
+	let response = await interaction.editReply(getListEmbed(demonJson.data, begin));
+	try {
+		while (true) {
+			const collectorFilter = i => i.user.id === interaction.user.id;
+			let confirmation = await response.awaitMessageComponent(
+				{
+					filter: collectorFilter,
+					time: 60000
+				}
+			);
 
-/**
- * 
- * @param {*} interaction 
- * @param {*} name 
- * @returns 
- */
-async function getJSONByName(interaction, name) {
-	const demon_name = name.trim().toLowerCase();
-	const responseData = await request.getResponseJSON(`api/v2/demons/?name_contains=${ demon_name.replace(' ', '+') }`);
-	if (responseData.data.length == 0) {
-		await replyMessage(interaction, `The level does not exist in Pointercrate or is not registered`);
-	} else {
-		for (const demon of responseData.data) {
-			if (demon.name.toLowerCase() == demon_name) {
-				return demon;
+			if (confirmation.customId === 'back') {
+				begin -= COUNT_LIST_ELEMENTS;
+			} else if (confirmation.customId === 'follow') {
+				begin += COUNT_LIST_ELEMENTS;
+			} else if (confirmation.customId === 'demon') {
+				await confirmation.update(await embed.getDemonEmbed(demonJson.data[parseInt(confirmation.values[0])]))
+				break;
 			}
+			await confirmation.update(getListEmbed(demonJson.data, begin))
 		}
+	} catch (error) {
+		console.log(error)
+		await interaction.editReply(
+			{
+				content: 'No player has been selected from the drop-down menu',
+				embeds: [],
+				components: []
+			}
+		);
 	}
-	return null;
 }
 
-/**
- * 
- * @param {*} interaction 
- * @param {*} args 
- */
-async function getUserInputOption(interaction, args) {
-	let option = null;
-	if (!(interaction instanceof ChatInputCommandInteraction)) {
-		if (args.length > 1 && isNaN((option = parseInt(args[1][1])))) {
-			option = args[1][1] + ' ';
-			for (let i = 2; i < args[1].length; i++)
-				option += args[1][i];
-			option = option.trim();
-		}
+async function responseMessage(interaction, option) {
+	let demonJson = await getDemonJSON(option)
+	if (demonJson.error || 'message' in demonJson.data /* response error */) {
+		await interaction.editReply('Pointercrate API: an error has occurred when querying the level')
+	} else if (demonJson.data.length === 1) {
+		await interaction.editReply(await embed.getDemonEmbed(demonJson.data[0]))
+	} else if (demonJson.data.length === 0) {
+		await interaction.editReply('Pointercrate API: the name or position of the entered level does not exist')
 	} else {
-		option = interaction.options.getString('name', false);
-		if (option == null) {
-			option = interaction.options.getInteger('position', false);
+		await waitResponseMessage(interaction, demonJson)
+	}
+}
+
+async function getUserInputOption(interaction) {
+	let option = interaction.options.getString('name', false);
+	if (utils.isNullOrUndefined(option)) {
+		option = interaction.options.getInteger('position', false)
+		if (!utils.isNullOrUndefined(option) && option < 0) {
+			option = 1;
 		}
 	}
 	return option;
 }
 
-/**
- * 
- * @param {*} interaction 
- */
 async function execute(interaction) {
-	try {
-		const option = await getUserInputOption(interaction, arguments);
-		if (option == null) {
-			await interaction.reply(`Interaction error: No option entered`);
-		} else {
+	const option = await getUserInputOption(interaction);
+	if (utils.isNullOrUndefined(option)) {
+		await interaction.reply(`You have not entered either of the two options. Enter a correct option`);
+	} else {
+		try {
 			if (interaction instanceof ChatInputCommandInteraction)
 				await interaction.deferReply();
-			const demon_json = (typeof option != 'number')  ? 
-			await getJSONByName(interaction, option) : await getJSONByPosition(interaction, option);
-			if (demon_json != null) {
-				await replyMessage(interaction, await embed.getDemonEmbed(interaction, demon_json));
-			}
+			await responseMessage(interaction, option)
+		} catch (e) {
+			console.log(e)
 		}
-	} catch (error) {
-		await replyMessage(interaction, `\`\`\`Internal error: \n${ error }\`\`\``);
 	}
 }
 
@@ -123,9 +188,9 @@ module.exports = {
 		.setDescription('Query a level by its position in the list or by its name')
 		.addIntegerOption(option =>
 			option.setName('position')
-				  .setDescription('The position of the demon, range 1 - 200'))
+				.setDescription('The position of the demon, range 1 - 200'))
 		.addStringOption(option =>
 			option.setName('name')
-				  .setDescription('The name of the demon')),
+				.setDescription('The name of the demon')),
 	execute
 };
