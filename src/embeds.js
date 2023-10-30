@@ -121,9 +121,9 @@ function getFieldsDemons(field_name, demons, completed, useVerifier) {
 
 module.exports = {
 	author,
-	async getDemonEmbed(msg, demon) {
+	async getDemonEmbed(demon) {
 		const demon_embed = new EmbedBuilder()
-			.setColor(0x2F3136)
+			.setColor(0x2B2D31)
 			.setAuthor(author)
 			.setTitle(demon.name)
 			.addFields(
@@ -162,7 +162,7 @@ module.exports = {
 
 	async getPlayerEmbed(player, demons) {
 		let demon_embed = new EmbedBuilder()
-			.setColor(0x2F3136)
+			.setColor(0x2B2D31)
 			.setAuthor(author)
 			.setTitle(player.name)
 			.addFields(
@@ -205,7 +205,7 @@ module.exports = {
 		})();
 
 		const embed = new EmbedBuilder()
-			.setColor(0x2F3136)
+			.setColor(0x2B2D31)
 			.setTitle(title)
 			.setDescription(description)
 			.setFooter({ text: footer_text })
@@ -250,7 +250,7 @@ module.exports = {
 		})();
 
 		const embed = new EmbedBuilder()
-			.setColor(0x2F3136)
+			.setColor(0x2B2D31)
 			.setTitle('Leaderboard')
 			.setDescription(description)
 			.setFooter({ text: `Page ${ page }` })
