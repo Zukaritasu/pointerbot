@@ -1,0 +1,242 @@
+AF	Afganistán	AFGHANISTAN
+ZA	Sudáfrica	SOUTH AFRICA
+AL	Albania	ALBANIA
+DE	Alemania	GERMANY
+AD	Andorra	ANDORRA
+AO	Angola	ANGOLA
+AI	Anguila	ANGUILLA
+AG	Antigua y Barbuda	ANTIGUA AND BARBUDA
+AN	Antillas Holandesas	NETHERLANDS ANTILLES
+SA	Arabia Saudita	SAUDI ARABIA
+DZ	Argelia	ALGERIA
+AR	Argentina	ARGENTINA
+AM	Armenia	ARMENIA
+AW	Aruba	ARUBA
+AU	Australia	AUSTRALIA
+AT	Austria	AUSTRIA
+AZ	Azerbaiyán	AZERBAIJAN
+BS	Bahamas	BAHAMAS
+BD	Bangladesh	BANGLADESH
+BB	Barbados	BARBADOS
+BH	Baréin	BAHREIN
+BE	Bélgica	BELGIUM
+BZ	Belice	BELIZE
+BJ	Benín	BENIN
+BM	Islas Bermudas	BERMUDA
+BY	Bielorrusia	BELARUS
+BO	Bolivia	BOLIVIA
+BA	Bosnia Herzegovina	BOSNIA HERZEGOVINA
+BW	Botsuana	BOTSWANA
+BR	Brasil	BRAZIL
+BN	Brunéi	BRUNEI DARUSSALAM
+BG	Bulgaria	BULGARIA
+BF	Burkina Faso	BURKINA FASO
+BI	Burundi	BURUNDI
+BT	Bután	BHUTAN
+CV	Cabo Verde	CAPE VERDE ISLANDS
+CM	Camerún	CAMEROON
+KH	Camboya	CAMBODIA
+CA	Canadá	CANADA
+QA	Katar	QATAR
+KZ	Kazajstán	KAZAKHSTAN
+TD	Chad	CHAD
+CL	Chile	CHILE
+CN	China	CHINA
+CY	Chipre	CYPRUS
+CO	Colombia	COLOMBIA
+CG	Congo	CONGO
+KP	Corea del Norte	KOREA – DEM. PEOPLE’S RE
+KR	Corea del Sur	KOREA – REP. OF
+CI	Costa de Marfil	COTE D’IVOIRE
+CR	Costa Rica	COSTA RICA
+HR	Croacia	CROATIA
+CU	Cuba	CUBA
+CW	Curazao	CURACAO
+DK	Dinamarca	DENMARK
+DJ	Yibuti	DJIBOUTI
+DM	Dominica	DOMINICA
+EG	Egipto	EGYPT
+SV	El Salvador	EL SALVADOR
+AE	Emiratos Árabes Unidos	UNITED ARAB EMIRATES
+EC	Ecuador	ECUADOR
+ER	Eritrea	ERITREA
+SK	Eslovaquia	SLOVAK REPUBLIC
+SI	Eslovenia	SLOVENIA
+ES	España	SPAIN
+US	Estados Unidos	UNITED STATES
+EE	Estonia	ESTONIA
+ET	Etiopía	ETHIOPIA
+FJ	Fiyi	FIJI ISLANDS
+PH	Filipinas	PHILIPPINES
+FI	Finlandia	FINLAND
+FR	Francia	FRANCE
+GA	Gabón	GABON
+GM	Gambia	THE GAMBIA
+GH	Gana	GHANA
+GI	Gibraltar	GIBRALTAR
+GD	Granada	GRENADA
+GR	Grecia	GREECE
+GL	Groenlandia	GREENLAND
+GP	Guadalupe	GUADELOUPE
+GU	Guam	GUAM
+GT	Guatemala	GUATEMALA
+GY	Guayana	GUYANA
+GF	Guayana Francesa	FRENCH GUIANA
+GN	Guinea	GUINEA
+GQ	Guinea Ecuatorial	EQUATORIAL GUINEA
+GW	Guinea-Bisáu	GUINEA BISSAU
+HT	Haití	HAITI
+NL	Países Bajos	NETHERLANDS
+HN	Honduras	HONDURAS
+HK	Hong Kong	HONG KONG
+HU	Hungría	HUNGARY
+YE	Yemen	YEMEN ARAB REP.
+BV	Isla Bouvet	BOUVET ISLAND
+UM	Isla Periférica Menor	U.S. MINOR OUTLYING ISLA
+NF	Isla Norfolk	NORFOLK ISLAND
+RE	Isla Reunión	REUNION ISLAND
+ST	Isla Santo Tomé y Príncipe	SÃO TOMÉ AND PRÍNCIPE
+KY	Islas Caimán	CAYMAN ISLANDS
+CX	Islas de Navidad	CHRISTMAS ISLAND
+CC	Islas de Coco	COCOS ISLANDS
+KM	Islas Comoras	COMORO ISLANDS
+CK	Islas Cook	COOK ISLANDS
+FK	Islas Malvinas	FALKLAND ISLANDS
+FO	Islas Faroe	FAROE ISLANDS
+HM	Islas Heard & McDonald	HEARD AND MCDONALD ISLAN
+MP	Islas Marianas del Norte	NORTHERN MARIANA ISLANDS
+MH	Islas Marshall	MARSHALL ISLANDS
+MU	Islas Mauricio	MAURITIUS
+SB	Islas Salomón	SOLOMON ISLANDS
+SJ	Islas Svalbard y Jan Mayan	SVALBARD & JAN MAYAN ISL
+TC	Islas Turcas y Caicos	TURKS AND CAICOS ISLANDS
+VI	Islas Vírgenes de los Estados Unidos	U.S.VIRGIN ISLANDS
+VG	Islas Vírgenes Británicas	BRITISH VIRGIN ISLANDS
+WF	Islas Wallis y Futuna	WALLIS AND FUTUNA ISLAND
+IN	India	INDIA
+ID	Indonesia	INDONESIA
+IG	Inglaterra	ENGLAND
+IR	Irán	IRAN
+IQ	Irak	IRAQ
+IE	Irlanda	IRELAND
+IS	Islandia	ICELAND
+IL	Israel	ISRAEL
+IT	Italia	ITALY
+YU	Yugoslavia	YUGOSLAVIA
+JM	Jamaica	JAMAICA
+JP	Japón	JAPAN
+JO	Jordán	JORDAN
+KI	Kiribati	KIRIBATI
+KW	Kuwait	KUWAIT
+LA	Laos	LAOS
+LS	Lesoto	LESOTHO
+LV	Letonia	LATVIA
+LB	Líbano	LEBANON
+LR	Liberia	LIBERIA
+LY	Libia	LIBYA ARAB JAMAHIRIYA
+LI	Liechtenstein	LIECHTENSTEIN
+LT	Lituania	LITHUANIA
+LU	Luxemburgo	LUXEMBOURG
+MK	Macedonia	MACEDONIA
+MG	Madagascar	MALAGASY REPUBLIC
+MY	Malasia	MALAYSIA
+MW	Malauí	MALAWI
+MV	Maldivas	MALDIVES
+ML	Malí	MALI
+MT	Malta	MALTA
+MA	Marruecos	MOROCCO
+MQ	Martinica	MARTINIQUE
+IM	Mauricio	MAURICIA
+MR	Mauritania	MAURITANIA
+YT	Mayotte	MAYOTTE
+MX	México	MEXICO
+MM	Birmania	MYANMAR
+FM	Micronesia	MICRONESIA
+MZ	Mozambique	MOZAMBIQUE
+MD	Moldavia	MOLDOVA
+MC	Mónaco	MONACO
+MN	Mongolia	MONGOLIA
+ME	Montenegro	MONTENEGRO
+MS	Montserrat	MONTSERRAT
+NA	Namibia	NAMIBIA
+NR	Nauru	NAURU
+NP	Nepal	NEPAL
+NI	Nicaragua	NICARAGUA
+NE	Níger	NIGER
+NG	Nigeria	NIGERIA
+NU	Niue	NIUE
+NO	Noruega	NORWAY
+NC	Nueva Caledonia	NEW CALEDONIA
+NZ	Nueva Zelanda	NEW ZEALAND
+OM	Omán	OMAN
+PW	Palaos	PALAU
+PS	Palestina	PALESTINA
+PA	Panamá	PANAMA CITY
+PG	Papúa Nueva Guinea	PAPUA NEW GUINEA
+PK	Pakistán	PAKISTAN
+PY	Paraguay	PARAGUAY
+PE	Perú	PERU
+PN	Pitcairn	PITCAIRN
+PF	Polinesia Francesa	FRENCH POLYNESIA
+PL	Polonia	POLAND
+PR	Puerto Rico	PUERTO RICO
+PT	Portugal	PORTUGAL
+KE	Kenia	KENYA
+KG	Kirguistán	KYRGYZSTAN
+GB	Reino Unido	UNITED KINGDOM
+CF	República Centroafricana	CENTRAL AFRICAN REPUBLIC
+GE	Republica de Georgia	GEORGIA
+CD	República Democrática del Congo	CONGO DEMOCRATIC REP.
+DO	República Dominicana	DOMINICAN REPUBLIC
+CZ	República Checa	CZECH REPUBLIC
+RO	Rumania	ROMANIA
+RW	Ruanda	RWANDA
+RU	Rusia	RUSSIAN FEDERATION
+EH	Sahara Occidental	WESTERN SAHARA
+BL	San Bartolomé	SAINT BARTHELEMY
+PM	San Pedro y Miquelón	SAINT PIERRE AND MIQUELON
+AS	Samoa Americana	AMERICAN SAMOA
+WS	Samoa Occidental	WESTERN SAMOA
+SM	San Marino	SAN MARINO
+SH	Santa Helena	SAINT HELENA
+LC	Santa Lucía	SAINT LUCIA
+KN	San Cristóbal y Nieves	SAINT KITTS AND NEVIS
+TS	San Martín	SAINT MARTIN
+VC	San Vicente y las Granadinas	SAINT VINCENT AND THE GRENADINES
+YC	Seychelles	SEYCHELLES
+SN	Senegal	SENEGAL
+SL	Sierra Leona	SIERRA LEONE
+RS	Serbia	SERBIA
+SG	Singapur	SINGAPORE
+SY	Siria	SYRIA
+SO	Somalia	SOMALIA
+LK	Sri Lanka	SRI LANKA
+SZ	Suazilandia	SWAZILAND
+SD	Sudán	SUDAN
+SS	Sudán del Sur	SOUTH SUDAN
+SE	Suecia	SWEDEN
+CH	Suiza	SWITZERLAND
+SR	Surinam	SURINAME
+TJ	Tayikistán	TAJKISTAN
+TH	Tailandia	THAILAND
+TW	Taiwán	TAIWAN
+TZ	Tanzania	TANZANIA
+TL	Timor Oriental	TIMOR-LESTE
+TG	Togo	TOGO
+TK	Tokelau	TOKELAU
+TO	Tonga	TONGA
+TT	Trinidad y Tobago	TRINIDAD AND TOBAGO
+TN	Túnez	TUNISIA
+TM	Turkmenistán	TURKMENISTAN
+TC	Turcas y Caicos	TURKS AND CAICOS ISLANDS
+TR	Turquía	TURKEY
+TV	Tuvalu	TUVALU
+UA	Ucrania	UKRAINE
+UG	Uganda	UGANDA
+UY	Uruguay	URUGUAY
+UZ	Uzbekistán	UZBEKISTAN
+VU	Vanuatu	VANUATU
+VE	Venezuela	VENEZUELA
+VN	Vietnam	VIETNAM
+ZM	Zambia	ZAMBIA
+ZW	Zimbabue	ZIMBABWE
