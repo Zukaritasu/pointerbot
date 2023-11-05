@@ -54,6 +54,31 @@ function getDemonFormatName(demon) {
 		demon.position > 150 ? demon.name : `*${demon.name}*`;
 }
 
+async function getLeaderboardByCountry(url, code) {
+	let players = [];
+	let responseData = await getResponseJSON(url == null ? 
+		`api/v1/players/ranking/?limit=25&after=0&nation=${code}` : url);
+	if (responseData instanceof Error) {
+		return {
+			players: []
+		}
+	} else {
+		return {
+			players: responseData.data,
+			next: responseData.page.get('next'),
+			prev: responseData.page.get('prev'),
+		};
+	}
+/* while (true) {
+		for (const player of responseData.data)
+			players.push(player);
+		if (responseData.page.get('next') == undefined)
+			break;
+		responseData = await getResponseJSON(responseData.page.get('next'));
+    }
+	 */
+}
+
 /**
  * Returns all demons completed, to be completed and demons verified.
  * 
@@ -114,5 +139,6 @@ module.exports = {
 	getResponseJSON, 
 	getDemonFormatName, 
 	getPlayerAllProgress, 
-	getFirstVictor 
+	getFirstVictor,
+	getLeaderboardByCountry
 };
