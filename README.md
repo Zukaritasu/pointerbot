@@ -22,7 +22,7 @@ The bot currently has no support for executing commands using prefixes, it only 
 
 # Support
 
-For questions and more information you can visit the support server https://discord.gg/2FRhsRTckY
+For questions and more information you can visit the support server https://discord.gg/nQpE5QsfmW
 
 # Libraries used
 
