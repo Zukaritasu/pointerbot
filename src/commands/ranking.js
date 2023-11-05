@@ -49,10 +49,6 @@ async function respondInteraction(interaction, page) {
     }
 }
 
-/**
- * 
- * @param {*} interaction 
- */
 async function execute(interaction) {
     let pageNumber = interaction.options.getInteger('page', false);
     let page = 1;
@@ -80,7 +76,8 @@ async function execute(interaction) {
                     {
                         filter: collectorFilter,
                         time: 60000
-                    });
+                    }
+                );
                 if (confirmation.customId === 'back')
                     page--;
                 else if (confirmation.customId === 'follow')
@@ -92,7 +89,8 @@ async function execute(interaction) {
                             content: updateResponse.error,
                             embeds: [],
                             components: []
-                        });
+                        }
+                    );
                     break;
                 }
                 else
@@ -104,7 +102,8 @@ async function execute(interaction) {
                 {
                     embeds: [message.embeds[0]],
                     components: []
-                });
+                }
+            );
         }
     }
 }
