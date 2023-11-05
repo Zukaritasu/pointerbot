@@ -15,17 +15,28 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const { EmbedBuilder, APIEmbedField, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { 
+	EmbedBuilder,  
+	ActionRowBuilder, 
+	ButtonBuilder, 
+	ButtonStyle,
+	StringSelectMenuBuilder,
+	StringSelectMenuOptionBuilder
+} = require('discord.js');
+
 const resource = require('./resource');
 const request = require('./request');
 const utils = require('./utils');
 const { urls } = require('../resource.json');
+const countries = require('../locale/locale-info.json')
 
 
 const author = {
 	name: 'Demonlist',
 	iconURL: urls.demonlist_icon
 };
+
+const EMBED_COLOR = 0x221F22 /** Black */
 
 /**
  * Returns a formatted string with the number of completed list demons
@@ -118,12 +129,15 @@ function getFieldsDemons(field_name, demons, completed, useVerifier) {
 	} : fields;
 }
 
+/////////////////////////////////////////////////
+//  EMBEDS
+/////////////////////////////////////////////////
 
 module.exports = {
 	author,
 	async getDemonEmbed(demon) {
 		const demon_embed = new EmbedBuilder()
-			.setColor(0x2B2D31)
+			.setColor(EMBED_COLOR)
 			.setAuthor(author)
 			.setTitle(demon.name)
 			.addFields(
@@ -135,11 +149,6 @@ module.exports = {
 				{ name: '\u200B',       value: '\u200B', inline: true }
 			)
 			.setThumbnail(resource.getTrophy('extreme', demon.position))
-			/* .addFields(
-				{
-					name: '\u200B',
-					value: `[Open in Pointercrate :arrow_upper_right:](${urls.pointercrate}demonlist/permalink/${demon.id}/)\n[Open Video :arrow_upper_right:](${demon.video})`
-				}) */
 			.setImage(demon.thumbnail)
 			.setTimestamp()
 			.setFooter({ text: `PointerBot` });
@@ -162,7 +171,7 @@ module.exports = {
 
 	async getPlayerEmbed(player, demons) {
 		let demon_embed = new EmbedBuilder()
-			.setColor(0x2B2D31)
+			.setColor(EMBED_COLOR)
 			.setAuthor(author)
 			.setTitle(player.name)
 			.addFields(
@@ -205,10 +214,12 @@ module.exports = {
 		})();
 
 		const embed = new EmbedBuilder()
-			.setColor(0x2B2D31)
+			.setAuthor(author)
+			.setColor(EMBED_COLOR)
 			.setTitle(title)
 			.setDescription(description)
 			.setFooter({ text: footer_text })
+			.setTimestamp()
 
 		return { embeds: [embed], components: [row] };
 	},
@@ -250,12 +261,120 @@ module.exports = {
 		})();
 
 		const embed = new EmbedBuilder()
-			.setColor(0x2B2D31)
+			.setColor(EMBED_COLOR)
+			.setAuthor(author)
 			.setTitle('Leaderboard')
 			.setDescription(description)
 			.setFooter({ text: `Page ${ page }` })
+			.setThumbnail('https://media.discordapp.net/attachments/1041217295743197225/1041217599016542298/extreme_demon.png')
+			.setTimestamp()
 
 		return { content: null, message: { embeds: [embed], components: [row] } }
-;
+	},
+
+	getCountryEmbed(page) {
+		const comboBox = new StringSelectMenuBuilder()
+			.setCustomId('country')
+			.setPlaceholder('Select a country');
+
+		const sortCountry = countries.sort(function(a, b) {
+			if (a.en_name.charCodeAt(0) < b.en_name.charCodeAt(0)) {
+			  return -1;
+			} else if (a.en_name.charCodeAt(0) > b.en_name.charCodeAt(0)) {
+			  return 1;
+			}
+			return 0;
+		  })
+	
+		let description = ''
+		for (let i = 25 * (page - 1); i < sortCountry.length && i != (25 * (page)); i++) {
+			description += `\`${`${i + 1}`.padStart(3, '0')}\` ${sortCountry[i].en_name}\n`
+			let countryName = sortCountry[i].en_name;
+			if (countryName.length > 25) {
+				countryName = countryName.substring(0, 22).concat('...')
+			}
+	
+			comboBox.addOptions(new StringSelectMenuOptionBuilder()
+				.setLabel(countryName)
+				.setValue(sortCountry[i].code)
+			);
+		}
+
+		let comboboxComponent = new ActionRowBuilder();
+		comboboxComponent.addComponents(comboBox);
+	
+		const row = new ActionRowBuilder()
+	
+		const backButton = new ButtonBuilder()
+			.setCustomId('back')
+			.setLabel('←')
+			.setStyle(ButtonStyle.Primary)
+			.setDisabled(page == 1)
+		const followButton = new ButtonBuilder()
+			.setCustomId('follow')
+			.setLabel('→')
+			.setStyle(ButtonStyle.Primary)
+			.setDisabled((25 * page) > sortCountry.length)
+	
+		row.addComponents(backButton, followButton);
+
+		const embed = new EmbedBuilder()
+			.setColor(EMBED_COLOR)
+			.setAuthor(author)
+			.setTitle('List of countries with stats')
+			.setDescription(description)
+			.setFooter({ text: `Page ${ page }` })
+			//.setThumbnail('https://flagpedia.net/data/org/w580/un.png')
+			.setThumbnail('https://media.discordapp.net/attachments/1041217295743197225/1041217599016542298/extreme_demon.png')
+			.setTimestamp()
+	
+		return {
+			content: 'Select one of the countries from the drop down menu',
+			embeds: [embed],
+			components: [comboboxComponent, row]
+		}
+	},
+
+	getLeaderboardCountryEmbed(players, page, code, next) {
+		const row = new ActionRowBuilder()
+	
+		const backButton = new ButtonBuilder()
+			.setCustomId('back')
+			.setLabel('←')
+			.setStyle(ButtonStyle.Primary)
+			.setDisabled(page === 0)
+		const followButton = new ButtonBuilder()
+			.setCustomId('follow')
+			.setLabel('→')
+			.setStyle(ButtonStyle.Primary)
+			.setDisabled(utils.isNullOrUndefined(next))
+		
+		row.addComponents(backButton, followButton);
+
+		let description = (() => {
+			let lines = '';
+
+			for (let i = 0, pos = (25 * page) + 1; i < players.length; i++, pos++) {
+				const player = players[i];
+				lines += `\`${`${pos}`.padStart(3, '0')}\` - **${player.name}** *${player.score.toFixed(2)}*\n`;
+			}
+			return lines;
+		})();
+
+		let footerText = `Page ${ page + 1 }`
+		const player = players[0]
+		if ('nationality' in player) {
+			footerText = `${player.nationality.nation}  - ${footerText}`
+		}
+
+		const embed = new EmbedBuilder()
+			.setAuthor(author)
+			.setColor(EMBED_COLOR)
+			.setTitle('Leaderboard')
+			.setDescription(description)
+			.setFooter({ text: footerText })
+			.setThumbnail(`https://flagcdn.com/h240/${code}.png`)
+
+		return { content: '', embeds: [embed], components: [row] }
 	}
 };
