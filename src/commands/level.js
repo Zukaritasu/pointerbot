@@ -131,15 +131,19 @@ async function waitResponseMessage(interaction, demonJson) {
 			}
 			await confirmation.update(getListEmbed(demonJson.data, begin))
 		}
-	} catch (error) {
-		console.log(error)
-		await interaction.editReply(
-			{
-				content: 'No player has been selected from the drop-down menu',
-				embeds: [],
-				components: []
-			}
-		);
+	} catch (e) {
+		console.log(e)
+		try {
+			await interaction.editReply(
+				{
+					content: 'No player has been selected from the drop-down menu',
+					embeds: [],
+					components: []
+				}
+			);
+		} catch (err) {
+			
+		}
 	}
 }
 

@@ -133,8 +133,8 @@ async function getPlayerForNameJSON(interaction, name) {
 			return { reply: null, player: players[0], message: null };
 		try {
 			return await waitUserResponse(interaction, players)
-		} catch (error) {
-			console.log(error)
+		} catch (e) {
+			console.log(e)
 			return { message: 'No player has been selected from the drop-down menu' };
 		}
 	}
@@ -168,9 +168,13 @@ async function execute(interaction) {
 				}
 			}
 		}
-	} catch (error) {
-		console.log(error);
-		await interaction.editReply(`Internal error: ${ error.message }`);
+	} catch (e) {
+		console.log(e);
+		try {
+			await interaction.editReply(`Internal error: ${ e.message }`);
+		} catch (err) {
+			
+		}
 	}
 }
 

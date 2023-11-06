@@ -80,12 +80,16 @@ async function processLeaderboardByCountry(response, confirmation, interaction, 
 
     } catch (e) {
         console.log(e);
-        await interaction.editReply(
-            {
-                embeds: [message.embeds[0]],
-                components: []
-            }
-        );
+        try {
+            await interaction.editReply(
+                {
+                    embeds: [message.embeds[0]],
+                    components: []
+                }
+            );
+        } catch (err) {
+            
+        }
     }
 }
 
@@ -118,13 +122,17 @@ async function execute(interaction) {
         }
     } catch (e) {
         console.log(e)
-        await interaction.editReply(
-            {
-                content: 'No country has been selected from the drop down menu',
-                embeds: [],
-                components: []
-            }
-        );
+        try {
+            await interaction.editReply(
+                {
+                    content: 'No country has been selected from the drop down menu',
+                    embeds: [],
+                    components: []
+                }
+            );
+        } catch (err) {
+            
+        }
     }
 }
 

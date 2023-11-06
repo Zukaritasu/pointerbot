@@ -98,12 +98,16 @@ async function execute(interaction) {
             }
         } catch (e) {
             console.log(e);
-            await interaction.editReply(
-                {
-                    embeds: [message.embeds[0]],
-                    components: []
-                }
-            );
+            try {
+                await interaction.editReply(
+                    {
+                        embeds: [message.embeds[0]],
+                        components: []
+                    }
+                );
+            } catch (err) {
+                
+            }
         }
     }
 }
