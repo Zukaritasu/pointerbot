@@ -21,6 +21,7 @@ const {
 
 const request = require('../request');
 const embeds = require('../embeds');
+const utils = require('../utils');
 
 const PTC_RESPONSE_ERROR = 'Pointercrate API: an error occurred when consulting the list of players in the ranking'
 
@@ -49,75 +50,71 @@ async function respondInteraction(interaction, page) {
     }
 }
 
-async function execute(interaction) {
-    let pageNumber = interaction.options.getInteger('page', false);
-    let page = 1;
+async function execute(_client, database, interaction) {
+    await utils.validateServerInfo(interaction, database, false, false, async (_serverInfo) => {
+        let pageNumber = interaction.options.getInteger('page', false);
+        let page = 1;
 
-    const collectorFilter = interaction => interaction.user.id === interaction.user.id;
+        const collectorFilter = interaction => interaction.user.id === interaction.user.id;
 
-    if (pageNumber != null && pageNumber != undefined) {
-        page = pageNumber;
-        if (page <= 0) {
-            page = 1;
-        }
-    }
-    if (interaction instanceof ChatInputCommandInteraction)
-        await interaction.deferReply();
-
-    let message = null;
-    let response = await respondInteraction(interaction, page);
-    if (response.error != null) {
-        await interaction.editReply(response.error);
-    } else {
-        try {
-            message = response.message;
-            while (true) {
-                const confirmation = await response.interaction.awaitMessageComponent(
-                    {
-                        filter: collectorFilter,
-                        time: 60000
-                    }
-                );
-                if (confirmation.customId === 'back')
-                    page--;
-                else if (confirmation.customId === 'follow')
-                    page++;
-                const updateResponse = await respondInteraction(confirmation, page);
-                if (updateResponse.error != null) {
-                    await confirmation.update(
+        if (pageNumber != null && pageNumber != undefined)
+            page = pageNumber <= 0 ? 1 : pageNumber;
+        
+        let message = null;
+        let response = await respondInteraction(interaction, page);
+        if (response.error != null) {
+            await interaction.editReply(response.error);
+        } else {
+            try {
+                message = response.message;
+                while (true) {
+                    const confirmation = await response.interaction.awaitMessageComponent(
                         {
-                            content: updateResponse.error,
-                            embeds: [],
+                            filter: collectorFilter,
+                            time: 60000
+                        }
+                    );
+                    if (confirmation.customId === 'back')
+                        page--;
+                    else if (confirmation.customId === 'follow')
+                        page++;
+                    const updateResponse = await respondInteraction(confirmation, page);
+                    if (updateResponse.error != null) {
+                        await confirmation.update(
+                            {
+                                content: updateResponse.error,
+                                embeds: [],
+                                components: []
+                            }
+                        );
+                        break;
+                    }
+                    else
+                        message = updateResponse.message;
+                }
+            } catch (e) {
+                console.log(e);
+                try {
+                    await interaction.editReply(
+                        {
+                            embeds: [message.embeds[0]],
                             components: []
                         }
                     );
-                    break;
+                } catch (err) {
+
                 }
-                else
-                    message = updateResponse.message;
-            }
-        } catch (e) {
-            console.log(e);
-            try {
-                await interaction.editReply(
-                    {
-                        embeds: [message.embeds[0]],
-                        components: []
-                    }
-                );
-            } catch (err) {
-                
             }
         }
-    }
+    })
 }
 
 module.exports = {
-	data: new SlashCommandBuilder()
-		.setName('ranking')
-		.setDescription('Shows the ranking of players')
+    data: new SlashCommandBuilder()
+        .setName('ranking')
+        .setDescription('Shows the ranking of players')
         .addIntegerOption(option =>
             option.setName('page')
                 .setDescription('The page number. There are 25 users on each page')),
-	execute
+    execute
 };

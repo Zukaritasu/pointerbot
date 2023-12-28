@@ -1,4 +1,4 @@
-// Copyright (C) 2022 Zukaritasu
+// Copyright (C) 2023 Zukaritasu
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -13,24 +13,45 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const {
+	SlashCommandBuilder,
+	ActionRowBuilder,
+	ButtonBuilder,
+	ButtonStyle,
+	ChatInputCommandInteraction, 
+	Client} = require('discord.js');
 
-const aboutJson = require('../../locale/us/about.json');
+const botenv = require('../botenv');
+const utils = require('../utils');
+const resource = require('../../resource.json');
+
+/* ============================================================== */
+
+/** 
+ * @param {Client} _client 
+ * @param {ChatInputCommandInteraction} interaction 
+ */
+async function execute(_client, database, interaction) {
+	await utils.validateServerInfo(interaction, database, false, false, async (serverInfo) => {
+		await interaction.editReply(
+			{ 
+				embeds: [botenv.getAboutEmbed(serverInfo.lang)], 
+				components: [
+					new ActionRowBuilder().addComponents(
+						new ButtonBuilder()
+							.setLabel('Donate')
+							.setURL(resource.urls.DONATIONS)
+							.setStyle(ButtonStyle.Link)
+					)
+				] 
+			}
+		)
+	})
+}
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('about')
 		.setDescription('Information about the development of this bot'),
-	async execute(interaction) {
-
-        const row = new ActionRowBuilder()
-		const followButton = new ButtonBuilder()
-			.setLabel('Donate')
-			.setURL('https://ko-fi.com/zukaritasu')
-			.setStyle(ButtonStyle.Link)
-	
-		row.addComponents(followButton);
-
-		await interaction.reply({ embeds: [aboutJson], components: [row] });
-	}
+	execute
 };

@@ -14,23 +14,24 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 const { SlashCommandBuilder } = require('discord.js');
-const embeds = require('../embeds');
-const request = require('../request');
 const pagination = require('../pagination');
+const utils = require('../utils');
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('main')
 		.setDescription('List of main demons in the range 1 - 75'),
-	async execute(interaction) {
-		await pagination.processInteraction(interaction,
-			{
-				after: 0,
-				title: 'Top 75',
-				getFooter: function (page) {
-					return `Page ${page} of 3`;
+	async execute(_client, database, interaction) {
+		await utils.validateServerInfo(interaction, database, false, false, async (_serverInfo) => {
+			await pagination.processInteraction(interaction,
+				{
+					after: 0,
+					title: 'Main List, **range 1 - 75**',
+					getFooter: function (page) {
+						return `Page ${page} of 3`;
+					}
 				}
-			}
-		);
+			)
+		})
 	}
 };

@@ -18,79 +18,15 @@
 const {
 	SlashCommandBuilder,
 	ChatInputCommandInteraction,
-	StringSelectMenuBuilder,
-	StringSelectMenuOptionBuilder,
-	EmbedBuilder,
-	ActionRowBuilder,
-	ButtonBuilder,
-	ButtonStyle
+	Client
 } = require('discord.js');
 
 const request = require('../request');
 const embed = require('../embeds');
 const utils = require('../utils');
+const { Db } = require('mongodb');
 
 const COUNT_LIST_ELEMENTS = 15;
-
-function getDemonPosition(pos) {
-	return `\`${`${pos}`.padStart(2, '0')}\``
-}
-
-function getListEmbed(demons, begin) {
-	let description = '';
-	let list_count = 0;
-
-	const comboBox = new StringSelectMenuBuilder()
-		.setCustomId('demon')
-		.setPlaceholder('Select a demon')
-
-	for (let i = begin; i < demons.length && i < begin + COUNT_LIST_ELEMENTS; i++) {
-		const demon = demons[i];
-		list_count++;
-		description += `${getDemonPosition(i + 1)} - ${demon.name} *by ${demon.publisher.name}*\n`;
-		comboBox.addOptions(new StringSelectMenuOptionBuilder()
-			.setLabel(`${demon.name} by ${demon.publisher.name}`)
-			.setValue(`${i}`)
-		);
-	}
-
-	const listEmbed = new EmbedBuilder()
-		.setColor(0x2F3136)
-		.setAuthor(embed.author)
-		.setTitle('Demons')
-		.setDescription(description)
-		.setTimestamp()
-		.setFooter({ text: `PointerBot` });
-
-	let buttonsComponent = new ActionRowBuilder();
-	if (demons.length > COUNT_LIST_ELEMENTS) {
-		const backButton = new ButtonBuilder()
-			.setCustomId('back')
-			.setLabel('←')
-			.setStyle(ButtonStyle.Primary)
-			.setDisabled(begin < COUNT_LIST_ELEMENTS)
-		const followButton = new ButtonBuilder()
-			.setCustomId('follow')
-			.setLabel('→')
-			.setStyle(ButtonStyle.Primary)
-			.setDisabled(list_count < COUNT_LIST_ELEMENTS || begin + COUNT_LIST_ELEMENTS >= demons.length)
-
-		buttonsComponent.addComponents(backButton, followButton);
-	}
-
-	let comboboxComponent = new ActionRowBuilder();
-	comboboxComponent.addComponents(comboBox);
-
-	return buttonsComponent.components.length == 0 ?
-		{
-			embeds: [listEmbed],
-			components: [comboboxComponent]
-		} :
-		{
-			embeds: [listEmbed],
-			components: [buttonsComponent, comboboxComponent]
-		}
-}
 
 async function getDemonJSON(value) {
 	let query = (typeof value === 'number') ? `api/v2/demons/listed?limit=1&after=${--value}` :
@@ -108,9 +44,13 @@ async function getDemonJSON(value) {
 	}
 }
 
+/**
+ * @param {ChatInputCommandInteraction} interaction 
+ * @param {object} demonJson 
+ */
 async function waitResponseMessage(interaction, demonJson) {
 	let begin = 0;
-	let response = await interaction.editReply(getListEmbed(demonJson.data, begin));
+	let response = await interaction.editReply(embed.getLevelListEmbed(demonJson.data, begin, COUNT_LIST_ELEMENTS));
 	try {
 		while (true) {
 			const collectorFilter = i => i.user.id === interaction.user.id;
@@ -129,7 +69,7 @@ async function waitResponseMessage(interaction, demonJson) {
 				await confirmation.update(await embed.getDemonEmbed(demonJson.data[parseInt(confirmation.values[0])]))
 				break;
 			}
-			await confirmation.update(getListEmbed(demonJson.data, begin))
+			await confirmation.update(embed.getLevelListEmbed(demonJson.data, begin, COUNT_LIST_ELEMENTS))
 		}
 	} catch (e) {
 		console.log(e)
@@ -142,12 +82,21 @@ async function waitResponseMessage(interaction, demonJson) {
 				}
 			);
 		} catch (err) {
-			
+
 		}
 	}
 }
 
-async function responseMessage(interaction, option) {
+/**
+ * Creates a request to the Pointercrate API waiting for a response and after
+ * having obtained the response it goes through a verification of the data
+ * and then calls the waitResponseMessage function.
+ * 
+ * @param {object} serverInfo 
+ * @param {ChatInputCommandInteraction} interaction 
+ * @param {string | number} option 
+ */
+async function responseMessage(serverInfo, interaction, option) {
 	let demonJson = await getDemonJSON(option)
 	if (demonJson.error || 'message' in demonJson.data /* response error */) {
 		await interaction.editReply('Pointercrate API: an error has occurred when querying the level')
@@ -160,30 +109,43 @@ async function responseMessage(interaction, option) {
 	}
 }
 
+/**
+ * Returns one of the two options entered by the user, which can be either
+ * the name of the level or its position in the demonlist. In any case that
+ * the user did not enter any value, the function returns null
+ * 
+ * @param {ChatInputCommandInteraction} interaction 
+ * @returns {string | number | null}
+ */
 async function getUserInputOption(interaction) {
 	let option = interaction.options.getString('name', false);
 	if (utils.isNullOrUndefined(option)) {
 		option = interaction.options.getInteger('position', false)
 		if (!utils.isNullOrUndefined(option) && option < 0) {
-			option = 1;
+			option = 1; // numbers less than 0 are not valid
 		}
 	}
 	return option;
 }
 
-async function execute(interaction) {
-	const option = await getUserInputOption(interaction);
-	if (utils.isNullOrUndefined(option)) {
-		await interaction.reply(`You have not entered either of the two options. Enter a correct option`);
-	} else {
-		try {
-			if (interaction instanceof ChatInputCommandInteraction)
-				await interaction.deferReply();
-			await responseMessage(interaction, option)
-		} catch (e) {
-			console.log(e)
+/**
+ * @param {Client} _client 
+ * @param {Db} database 
+ * @param {ChatInputCommandInteraction} interaction 
+ */
+async function execute(_client, database, interaction) {
+	await utils.validateServerInfo(interaction, database, false, false, async (serverInfo) => {
+		const option = await getUserInputOption(interaction);
+		if (utils.isNullOrUndefined(option)) {
+			await interaction.reply(`You have not entered either of the two options. Enter a correct option`);
+		} else {
+			try {
+				await responseMessage(serverInfo, interaction, option)
+			} catch (e) {
+				console.log(e)
+			}
 		}
-	}
+	})
 }
 
 module.exports = {

@@ -1,10 +1,10 @@
 {
-    "title": "About PointerBot",
-    "description": "It is a bot that displays information about registered Pointercrate players and Demonlist levels. It contains a variety of basic commands to query the necessary information.\n\nThe bot currently has no support for executing commands using prefixes, it only supports slash commands /\n\nFrom a programming point of view the bot was created with the [discord.js](https://discord.js.org/) library and makes HTTP requests to the [Pointercrate API](https://www.pointercrate.com/documentation/index) to request the information required by the end user. If the Pointercrate website stops working in that case the bot will also stop working since the bot depends on Pointercrate.\n\nThe bot was developed by [Zukaritasu](https://github.com/Zukaritasu) and the bot source code is located on Github [PointerBot Repository](https://github.com/Zukaritasu/pointerbot)",
-    "color": 3121744,
-    "author": {
-      "name": "Zukaritasu",
-      "url": "https://github.com/Zukaritasu",
-      "icon_url": "https://avatars.githubusercontent.com/u/77790801?v=4"
-    }
+  "title": "About PointerBot",
+  "description": "It is a bot that displays information about registered Pointercrate players and Demonlist levels. It contains a variety of basic commands to query the necessary information.\n\nThe bot currently has no support for executing commands using prefixes, it only supports slash commands /\n\nFrom a programming point of view the bot was created with the [discord.js](https://discord.js.org/) library and makes HTTP requests to the [Pointercrate API](https://www.pointercrate.com/documentation/index) to request the information required by the end user. If the Pointercrate website stops working in that case the bot will also stop working since the bot depends on Pointercrate.\n\nThe bot was developed by [Zukaritasu](https://github.com/Zukaritasu) and the bot source code is located on Github [PointerBot Repository](https://github.com/Zukaritasu/pointerbot)",
+  "color": 3121744,
+  "author": {
+    "name": "Zukaritasu",
+    "url": "https://github.com/Zukaritasu",
+    "icon_url": "https://avatars.githubusercontent.com/u/77790801?v=4"
   }
+}

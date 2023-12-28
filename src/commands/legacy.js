@@ -16,20 +16,21 @@
 const { SlashCommandBuilder } = require('discord.js');
 
 const pagination = require('../pagination');
+const utils = require('../utils');
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('legacy')
 		.setDescription('List of legacy demons starting at 151 place'),
-	async execute(interaction) {
-		await pagination.processInteraction(interaction,
-			{
-				after: 150,
-				title: 'Legacy',
-				getFooter: function (page) {
-					return `Page ${page}`;
+	async execute(_client, database, interaction) {
+		await utils.validateServerInfo(interaction, database, false, false, async (_serverInfo) => {
+			await pagination.processInteraction(interaction,
+				{
+					after: 150,
+					title: 'Legacy List, **from position 151**',
+					getFooter:  page => `Page ${page}`
 				}
-			}
-		);
+			)
+		})
 	}
 };

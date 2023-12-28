@@ -16,21 +16,26 @@
  */
 
 const { Events, Message } = require('discord.js');
+const { Db } = require('mongodb');
+const server = require('../src/server');
+const privateCommands = require('../src/botenv').getPrivateCommands()
 
-
-const prefix = '$'
+const prefix = '!zk'
 
 module.exports = {
-	name: Events.MessageCreate,
-	once: false,
-	async execute(message, _client) {
-		//const content = message.content.trim().toLowerCase();
-  //      if (content.startsWith(prefix) && content.length > 2) {
-  //          const msg_parts = content.split(' ');
-  //          const command = message.client.commands.get(msg_parts[0].substring(prefix.length, msg_parts[0].length));
-  //          if (command != null) {
-  //              await command.execute(msg, msg_parts);
-  //          }
-  //      }
-	},
+    name: Events.MessageCreate,
+    once: false,
+
+    /** @param {Message} _message */
+    async execute(client, database, message) {
+        if (!message.author.bot && message.author.id === '591640548490870805') {
+            const content = message.content.trim()
+            for (const command of privateCommands) {
+                if (content.startsWith(`${prefix} ${command.info.name}`)) {
+                    await command.info.func(client, database, message, content.split(' ').slice(2))
+                    break
+                }
+            }
+        }
+    },
 };

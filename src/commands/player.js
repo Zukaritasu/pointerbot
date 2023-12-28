@@ -15,82 +15,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const { 
-	SlashCommandBuilder, 
-	EmbedBuilder, 
-	StringSelectMenuBuilder, 
-	StringSelectMenuOptionBuilder, 
-	ActionRowBuilder, 
-	ButtonBuilder,
-	ButtonStyle,
+const {
+	SlashCommandBuilder,
 	ChatInputCommandInteraction
 } = require('discord.js');
 
 const request = require('../request');
 const embed = require('../embeds');
+const utils = require('../utils');
 
 const COUNT_LIST_ELEMENTS = 15;
-
-function getPlayerPosition(pos) {
-	return `\`${`${pos}`.padStart(2, '0') }\``
-}
-
-
-function getListEmbed(players_json, begin) {
-	let description = '';
-	let list_count = 0;
-
-	const comboBox = new StringSelectMenuBuilder()
-		.setCustomId('player')
-		.setPlaceholder('Select a player')
-
-	for (let i = begin; i < players_json.length && i < begin + COUNT_LIST_ELEMENTS; i++) {
-		const player = players_json[i];
-		list_count++;
-		description += `${ getPlayerPosition(i + 1) } - ${ player.name } *score ${ player.score.toFixed(2) }*\n`;
-		comboBox.addOptions(new StringSelectMenuOptionBuilder()
-			.setLabel(player.name)
-			.setValue(player.name)
-		);
-	}
-
-	const playerListEmbed = new EmbedBuilder()
-		.setColor(0x2F3136)
-		.setAuthor(embed.author)
-		.setTitle('Players')
-		.setDescription(description)
-		.setTimestamp()
-		.setFooter({ text: `PointerBot` });
-
-	let buttonsComponent = new ActionRowBuilder();
-	if (players_json.length > COUNT_LIST_ELEMENTS) {
-		const backButton = new ButtonBuilder()
-			.setCustomId('back')
-			.setLabel('←')
-			.setStyle(ButtonStyle.Primary)
-			.setDisabled(begin < COUNT_LIST_ELEMENTS)
-		const followButton = new ButtonBuilder()
-			.setCustomId('follow')
-			.setLabel('→')
-			.setStyle(ButtonStyle.Primary)
-			.setDisabled(list_count < COUNT_LIST_ELEMENTS || begin + COUNT_LIST_ELEMENTS >= players_json.length)
-
-		buttonsComponent.addComponents(backButton, followButton);
-	}
-		
-	let comboboxComponent = new ActionRowBuilder();
-	comboboxComponent.addComponents(comboBox);
-
-	return  buttonsComponent.components.length == 0 ? 
-	{ 
-		embeds: [playerListEmbed], 
-		components: [comboboxComponent] 
-	} :
-	{ 
-		embeds: [playerListEmbed], 
-		components: [buttonsComponent, comboboxComponent] 
-	}
-}
 
 /**
  * 
@@ -100,7 +34,7 @@ function getListEmbed(players_json, begin) {
  */
 async function waitUserResponse(interaction, players) {
 	let begin = 0;
-	let response = await interaction.editReply(getListEmbed(players, begin));
+	let response = await interaction.editReply(embed.getPlayerListEmbed(players, begin, COUNT_LIST_ELEMENTS));
 	while (true) {
 		const collectorFilter = i => i.user.id === interaction.user.id;
 		let confirmation = await response.awaitMessageComponent({ filter: collectorFilter, time: 60000 });
@@ -116,7 +50,7 @@ async function waitUserResponse(interaction, players) {
 				}
 			}
 		}
-		await confirmation.update(getListEmbed(players, begin))
+		await confirmation.update(embed.getPlayerListEmbed(players, begin, COUNT_LIST_ELEMENTS))
 	}
 }
 
@@ -138,7 +72,7 @@ async function getPlayerForNameJSON(interaction, name) {
 			return { message: 'No player has been selected from the drop-down menu' };
 		}
 	}
-	
+
 	return { message: 'Pointercrate API: player does not exist' };
 }
 
@@ -146,36 +80,36 @@ async function getPlayerForNameJSON(interaction, name) {
  * 
  * @param {*} interaction 
  */
-async function execute(interaction) {
-	try {
-		let player = interaction.options.getString('name', false);
-		if (player == null) {
-			await interaction.reply(`Interaction error: No option entered`);
-		} else {
-			if (interaction instanceof ChatInputCommandInteraction)
-				await interaction.deferReply();
-			const confirm = await getPlayerForNameJSON(interaction, player.toLowerCase().trim());
-			if (confirm.message != null) {
-				await interaction.editReply({ content: confirm.message, embeds: [], components: [] });
+async function execute(_client, database, interaction) {
+	await utils.validateServerInfo(interaction, database, false, false, async (_serverInfo) => {
+		try {
+			let player = interaction.options.getString('name', false);
+			if (player === null) {
+				await interaction.editReply(`Interaction error: No option entered`);
 			} else {
-				const playerEmbed = [
-					await embed.getPlayerEmbed(confirm.player, await request.getPlayerAllProgress(confirm.player.id))
-				]
-				if (confirm.reply != null) {
-					await confirm.reply.update({ embeds: playerEmbed, components: [] });
+				const confirm = await getPlayerForNameJSON(interaction, player.toLowerCase().trim());
+				if (confirm.message !== null) {
+					await interaction.editReply({ content: confirm.message, embeds: [], components: [] });
 				} else {
-					await interaction.editReply({ embeds: playerEmbed });
+					const playerEmbed = [
+						await embed.getPlayerEmbed(confirm.player, await request.getPlayerAllProgress(confirm.player.id))
+					]
+					if (confirm.reply !== null) {
+						await confirm.reply.update({ embeds: playerEmbed, components: [] });
+					} else {
+						await interaction.editReply({ embeds: playerEmbed });
+					}
 				}
 			}
+		} catch (e) {
+			console.log(e);
+			try {
+				await interaction.editReply(`Internal error: ${e.message}`);
+			} catch (err) {
+
+			}
 		}
-	} catch (e) {
-		console.log(e);
-		try {
-			await interaction.editReply(`Internal error: ${ e.message }`);
-		} catch (err) {
-			
-		}
-	}
+	})
 }
 
 module.exports = {
@@ -184,8 +118,7 @@ module.exports = {
 		.setDescription('Check the stats of a player who is registered in Pointercrate')
 		.addStringOption(option =>
 			option.setName('name')
-				  .setDescription('The name of the player')
-				  .setRequired(true)
-		),
-		execute
+				.setDescription('The name of the player')
+				.setRequired(true)),
+	execute
 };

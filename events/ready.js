@@ -15,22 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const { Events } = require('discord.js');
+const { Events, SlashCommandSubcommandBuilder } = require('discord.js');
 
 module.exports = {
 	name: Events.ClientReady,
 	once: true,
-	execute(client) {
-		console.log(`Ready! Logged in as ${client.user.tag}`);
-
-		client.commands.forEach((value, _key) => {
-			client.application.commands.create(
-				{
-					name: value.data.name,
-					description: value.data.description,
-					options: value.data.options
-				}
-			)
-		});
+	execute(_client, _database, _interaction) {
+		console.log(`Ready! Logged in as ${_client.user.tag}`);
 	},
 };

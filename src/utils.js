@@ -15,6 +15,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+const { Db } = require('mongodb');
+const server = require('./server');
+const { ChatInputCommandInteraction } = require('discord.js');
+
 module.exports = {
 	/**
 	 * Returns the text with a dash in the middle indicating that the user is banned.
@@ -40,5 +44,26 @@ module.exports = {
 
 	isNullOrUndefined(value) {
 		return value == null || value == undefined;
+	},
+
+	/**
+	 * @param {ChatInputCommandInteraction} interaction
+	 * @param {Db} database
+	 * @param {boolean} ephemeral 
+	 * @param {boolean} usePermissions 
+	 * @param {function(object)} func 
+	 */
+	async validateServerInfo(interaction, database, ephemeral, usePermissions, func) {
+		await interaction.deferReply({ ephemeral: ephemeral });
+		if (usePermissions && !server.isAdminOrOwner(interaction)) {
+			await interaction.editReply('You do not have sufficient privileges to perform this action');
+		} else {
+			const serverInfo = await server.getServerInfo(database, interaction.guildId)
+			if (serverInfo === null) {
+				await interaction.editReply('Error in querying server information');
+			} else {
+				await func(serverInfo)
+			}
+		}
 	}
 };

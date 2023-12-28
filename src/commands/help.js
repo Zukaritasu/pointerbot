@@ -15,13 +15,28 @@
 
 const { SlashCommandBuilder } = require('discord.js');
 
-const helpJson = require('../../locale/us/help.json');
+const botenv = require('../botenv');
+const utils = require('../utils');
+const { Db } = require('mongodb');
+
+/* ============================================================== */
+
+/** 
+ * @param {Client} _client 
+ * @param {Db} database 
+ * @param {ChatInputCommandInteraction} interaction 
+ */
+async function execute(_client, database, interaction) {
+	await utils.validateServerInfo(interaction, database, false, false, async (serverInfo) => {
+		await interaction.editReply({
+			embeds: [botenv.getHelpEmbed(serverInfo.lang)]
+		});
+	})
+}
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('help')
 		.setDescription('Show the help of this bot'),
-	async execute(interaction) {
-		await interaction.reply({ embeds: [helpJson] });
-	}
+	execute
 };

@@ -2,7 +2,9 @@
 	"urls": {
 		"pointercrate": "https://pointercrate.com/",
 		"flags": "https://flagcdn.com/h240/",
-		"demonlist_icon": "https://cdn.discordapp.com/icons/395654171422097420/b16778f9020d1242eed156b67a1a2381.png"
+		"demonlist_icon": "https://cdn.discordapp.com/icons/395654171422097420/b16778f9020d1242eed156b67a1a2381.png",
+		"favicon": "https://media.discordapp.net/attachments/1043902730206462052/1182094837277806673/pointerbot.png",
+		"DONATIONS": "https://ko-fi.com/zukaritasu"
 	},
 	"trophy": {
 		"extreme": {
@@ -45,6 +47,14 @@
 		}
 	},
 	"emojis": {
-		"arrow": "<:gd_img_flag:1041402120454283434>"
+		"arrow": "<:gd_img_flag:1041402120454283434>",
+		"arrowleft": "<:arrowleft:1044790805501575228>",
+		"arrowright": "<:arrowright:1044790809804943410>"
+		,
+		"id": {
+			"arrow": "1041402120454283434",
+			"arrowleft": "1044790805501575228",
+			"arrowright": "1044790809804943410"
+		}
 	}
 }

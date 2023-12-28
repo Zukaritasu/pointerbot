@@ -18,28 +18,19 @@
 const { SlashCommandBuilder, ChatInputCommandInteraction } = require('discord.js');
 const request = require('../request');
 const embeds = require('../embeds');
+const utils = require('../utils');
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('top')
 		.setDescription('The top 1 player of the leaderboad'),
 
-	async execute(interaction) {
-		if (interaction instanceof ChatInputCommandInteraction)
-			await interaction.deferReply();
-		const responseData = await request.getResponseJSON('api/v2/demons/listed?limit=1&after=0');
-
-		let message;
-		if (responseData.data.length === 0) {
-			message = 'Pointercrate API: has returned an empty field'
-		} else {
-			message = await embeds.getDemonEmbed(responseData.data[0]);
-		}
-
-		if (interaction instanceof ChatInputCommandInteraction) {
+	async execute(_client, database, interaction) {
+		await utils.validateServerInfo(interaction, database, false, false, async (_serverInfo) => {
+			const responseData = await request.getResponseJSON('api/v2/demons/listed?limit=1&after=0')
+			const message = responseData.data.length === 0 ? 'Pointercrate API: has returned an empty field' : 
+				await embeds.getDemonEmbed(responseData.data[0])
 			await interaction.editReply(message);
-		} else {
-			await interaction.reply(message);
-		}
+		})
 	}
 };

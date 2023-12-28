@@ -1,4 +1,4 @@
-// Copyright (C) 2022 Zukaritasu
+// Copyright (C) 2022-2023 Zukaritasu
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ async function respondInteraction(interaction, page, after, title, footer) {
     let responseError = null;
     let messageEmbed = null;
     if (!(responseData instanceof Error)) {
-        messageEmbed = await embeds.getDemonlistEmbed(responseData.data, page, title, footer, after === 150);
+        messageEmbed = embeds.getDemonlistEmbed(responseData.data, page, title, footer, after === 150);
         if (interaction instanceof MessageComponentInteraction) {
             await interaction.update(messageEmbed);
         } else {
@@ -45,9 +45,6 @@ async function respondInteraction(interaction, page, after, title, footer) {
 async function processInteraction(interaction, info) {
     let page = 1;
     const collectorFilter = interaction => interaction.user.id === interaction.user.id;
-
-    if (interaction instanceof ChatInputCommandInteraction)
-        await interaction.deferReply();
 
     let message = null;
     let response = await respondInteraction(interaction, page, info.after, info.title, info.getFooter(page));

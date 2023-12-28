@@ -20,6 +20,7 @@ const {
 
 const request = require('../request')
 const embeds = require('../embeds')
+const utils = require('../utils')
 
 const PTC_RESPONSE_ERROR = 'Pointercrate API: the country has no player statistics'
 
@@ -41,7 +42,7 @@ async function processLeaderboardByCountry(response, confirmation, interaction, 
     let message = null;
     try {
         page = 0;
-        message = embeds.getLeaderboardCountryEmbed(responseJson.players, page, 
+        message = embeds.getLeaderboardCountryEmbed(responseJson.players, page,
             `${country_code}`.toLowerCase(), responseJson.next);
         await confirmation.update(message);
 
@@ -73,7 +74,7 @@ async function processLeaderboardByCountry(response, confirmation, interaction, 
                 );
                 return
             }
-            message = embeds.getLeaderboardCountryEmbed(responseJson.players, page, 
+            message = embeds.getLeaderboardCountryEmbed(responseJson.players, page,
                 `${country_code}`.toLowerCase(), responseJson.next);
             await confirmation.update(message);
         }
@@ -88,52 +89,52 @@ async function processLeaderboardByCountry(response, confirmation, interaction, 
                 }
             );
         } catch (err) {
-            
+
         }
     }
 }
 
-async function execute(interaction) {
-    let page = 1;
+async function execute(_client, database, interaction) {
+    await utils.validateServerInfo(interaction, database, false, false, async (_serverInfo) => {
+        let page = 1;
 
-    try {
-        if (interaction instanceof ChatInputCommandInteraction)
-            await interaction.deferReply();
-        while (true) {
-            let response = await interaction.editReply(embeds.getCountryEmbed(page));
-
-            const collectorFilter = i => i.user.id === interaction.user.id;
-            let confirmation = await response.awaitMessageComponent(
-                {
-                    filter: collectorFilter,
-                    time: 60000
-                }
-            );
-
-            if (confirmation.customId === 'back')
-                page--;
-            else if (confirmation.customId === 'follow')
-                page++;
-            else if (confirmation.customId === 'country') {
-                await processLeaderboardByCountry(response, confirmation, interaction, collectorFilter)
-                break;
-            }
-            await confirmation.update(embeds.getCountryEmbed(page));
-        }
-    } catch (e) {
-        console.log(e)
         try {
-            await interaction.editReply(
-                {
-                    content: 'No country has been selected from the drop down menu',
-                    embeds: [],
-                    components: []
+            while (true) {
+                let response = await interaction.editReply(embeds.getCountryEmbed(page));
+
+                const collectorFilter = i => i.user.id === interaction.user.id;
+                let confirmation = await response.awaitMessageComponent(
+                    {
+                        filter: collectorFilter,
+                        time: 60000
+                    }
+                );
+
+                if (confirmation.customId === 'back')
+                    page--;
+                else if (confirmation.customId === 'follow')
+                    page++;
+                else if (confirmation.customId === 'country') {
+                    await processLeaderboardByCountry(response, confirmation, interaction, collectorFilter)
+                    break;
                 }
-            );
-        } catch (err) {
-            
+                await confirmation.update(embeds.getCountryEmbed(page));
+            }
+        } catch (e) {
+            console.log(e)
+            try {
+                await interaction.editReply(
+                    {
+                        content: 'No country has been selected from the drop down menu',
+                        embeds: [],
+                        components: []
+                    }
+                );
+            } catch (err) {
+
+            }
         }
-    }
+    })
 }
 
 module.exports = {
