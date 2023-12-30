@@ -16,22 +16,10 @@
  */
 
 const { Events } = require('discord.js');
-const { supportServer } = require('../config.json')
+const botenv = require('../src/botenv')
 
 module.exports = {
 	name: Events.GuildCreate,
 	once: false,
-	async execute(_client, _database) {
-        const guild = _client.guilds.cache.get(supportServer.id);
-        if (guild != null) {
-            const channel = guild.channels.cache.get((supportServer.notifyChannelID));
-            if (channel != null) {
-                try {
-                    channel.send(`The bot has been added to the server: ${_guild.name} (id: ${_guild.id}) ${_guild.icon}`);
-                } catch (error) {
-                    
-                }
-            }
-        }
-	},
+	execute: async (client, _database) => await botenv.sendBotEntered(client),
 };

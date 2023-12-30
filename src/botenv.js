@@ -15,10 +15,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const { Collection } = require('discord.js');
+const { Collection, Client } = require('discord.js');
 const path = require('node:path');
 const fs = require('node:fs');
 const langInfo = require('../locale/info.json');
+const { supportServer } = require('../config.json')
 
 function getEmbed(langCode, name) {
     const info = langInfo.languages.find(value => value.name === langCode) ?? langInfo.languages[0]
@@ -59,4 +60,19 @@ module.exports = {
 
     getAboutEmbed: (lang) => { return getEmbed(lang, 'about') },
     getHelpEmbed: (lang) => { return getEmbed(lang, 'help') },
+
+    /** @param {Client} client */
+    sendBotEntered: async (client) => {
+        const guild = client.guilds.cache.get(supportServer.id);
+        if (guild != null) {
+            const channel = guild.channels.cache.get((supportServer.notifyChannelID));
+            if (channel != null) {
+                try {
+                    channel.send(`The bot has been added to the server: ${guild.name} (id: ${guild.id}) ${guild.icon}`);
+                } catch (error) {
+                    
+                }
+            }
+        }
+    }
 }

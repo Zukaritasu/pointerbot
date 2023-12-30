@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const { Events, Message } = require('discord.js');
+const { Events, Message, Client } = require('discord.js');
 const { Db } = require('mongodb');
 const server = require('../src/server');
 const privateCommands = require('../src/botenv').getPrivateCommands()
@@ -26,7 +26,11 @@ module.exports = {
     name: Events.MessageCreate,
     once: false,
 
-    /** @param {Message} _message */
+    /** 
+     * @param {Client} client 
+     * @param {Db} database
+     * @param {Message} message 
+     */
     async execute(client, database, message) {
         if (!message.author.bot && message.author.id === '591640548490870805') {
             const content = message.content.trim()
