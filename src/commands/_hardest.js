@@ -47,7 +47,7 @@ async function updateHardestLevel(database, message,  hardest) {
  * @param {string[]} array 
  */
 async function execute(client, database, message, array) {
-	if (array.length != 0) {
+	if (array.length !== 0) {
 		const hardestLevel = array.join(' ')
 		if (await updateHardestLevel(database, message, hardestLevel)) {
 			client.user.presence.set({

@@ -21,6 +21,7 @@ const {
 const request = require('../request')
 const embeds = require('../embeds')
 const utils = require('../utils')
+const botenv = require('../botenv')
 
 const PTC_RESPONSE_ERROR = 'Pointercrate API: the country has no player statistics'
 
@@ -95,7 +96,7 @@ async function processLeaderboardByCountry(response, confirmation, interaction, 
 }
 
 async function execute(_client, database, interaction) {
-    await utils.validateServerInfo(interaction, database, false, false, async (_serverInfo) => {
+    await utils.validateServerInfo(interaction, database, false, false, async (serverInfo) => {
         let page = 1;
 
         try {
@@ -125,7 +126,7 @@ async function execute(_client, database, interaction) {
             try {
                 await interaction.editReply(
                     {
-                        content: 'No country has been selected from the drop down menu',
+                        content: botenv.getJsonErros(serverInfo).COUNTRY_NOT_SELECTED,
                         embeds: [],
                         components: []
                     }

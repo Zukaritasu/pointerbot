@@ -23,7 +23,7 @@ module.exports = {
     async execute(_client, _database, interaction) {
         if (interaction.isChatInputCommand()) {
             const command = interaction.client.commands.get(interaction.commandName);
-            if (command != null) {
+            if (command !== null) {
                 await command.execute(_client, _database, interaction);
             }
         }

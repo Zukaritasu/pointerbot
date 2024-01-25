@@ -52,7 +52,7 @@ async function updateServerLang(database, interaction, serverInfo, lang) {
 async function execute(_client, database, interaction) {
     await utils.validateServerInfo(interaction, database, true, true, async (serverInfo) => {
         const lang = interaction.options.getString('language').trim().toLowerCase()
-        if (languages.find(value => value.name === lang) == undefined)
+        if (languages.find(value => value.name === lang) === undefined)
             await interaction.editReply('Language name entered is incomplete or not supported in this bot');
         else 
             await updateServerLang(database, interaction, serverInfo, lang)

@@ -21,7 +21,12 @@ const fs = require('node:fs');
 const langInfo = require('../locale/info.json');
 const { supportServer } = require('../config.json')
 
-function getEmbed(langCode, name) {
+/**
+ * @param {string} langCode 
+ * @param {string} name 
+ * @returns {object}
+ */
+function getJsonByLanguage(langCode, name) {
     const info = langInfo.languages.find(value => value.name === langCode) ?? langInfo.languages[0]
     try {
         return require(`../locale/${info.code}/${name}.json`);
@@ -58,8 +63,13 @@ module.exports = {
             .map(file => require(path.join(eventsPath, file)))
     },
 
-    getAboutEmbed: (lang) => { return getEmbed(lang, 'about') },
-    getHelpEmbed: (lang) => { return getEmbed(lang, 'help') },
+    getAboutEmbed: (lang) => { return getJsonByLanguage(lang, 'about') },
+    getHelpEmbed: (lang) => { return getJsonByLanguage(lang, 'help') },
+    /**
+     * @param {string} lang
+     * @returns {object} 
+     */
+    getJsonErros: (lang) => { return getJsonByLanguage(lang, 'errors') },
 
     /** @param {Client} client */
     sendBotEntered: async (client) => {
