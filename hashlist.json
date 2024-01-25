@@ -1,54 +1,50 @@
 [
   {
     "name": "about.js",
-    "hash": "85cdeb37919b4298deff8758cb6a9e54d392667b1d6197dc30aeb8b1fb5bb6d7"
+    "hash": "13f5e559269cdec878d3565ed13c6e2c2d96dcb875ed2e2629e31488032810e1"
   },
   {
     "name": "countrystats.js",
-    "hash": "d8e84b8c351f4ae6f76773a9b78370a92a338e837330a1edca581ce4a8443b91"
+    "hash": "122fa28c0f3f3ca0c192e94deca6431a9cfd0dc13cdd74caed22c7294f029be9"
   },
   {
     "name": "extended.js",
-    "hash": "34d61cf57ee7a101bf91ac20a4b82ab01572170767455264951f9bfc0f415006"
+    "hash": "e897067582055d72899826be5fe526e6426c67954ec6a3749ceac556a43c6c4e"
   },
   {
     "name": "help.js",
-    "hash": "520f603b86c4d95dc94c500ceb566d0f8de97fe3ef00ae24cfe7f915c7d11bef"
+    "hash": "97092ef83643a3f5230fe59bf633ac4b46dcdea715a9f5c798fa66efb0f6984f"
   },
   {
     "name": "legacy.js",
-    "hash": "ff2e14df4ed6466effb91fb6eee00adf9e927ea8ac440798f66f009c862a7c7c"
+    "hash": "c743f32f54ddf66547d270abdf336127fae793f98f06679bef7afa93aeb4486d"
   },
   {
     "name": "level.js",
-    "hash": "ccca00d427ca8af3ff5b9f3580f271d56285fd9dd77e28fa1941320d5a2ebe2e"
+    "hash": "f607491584f038ca251400d9a6e49b25532f4ed8d8204fc788cfd01539744659"
   },
   {
     "name": "main.js",
-    "hash": "03e83295c71b14b89842ab6d8fd96b68d0c2cd0a04e527c93fde1d90e1111f1c"
+    "hash": "ae8502b1f86a3d89c6bdb8f46e2147cd6ea1bb649a475d103337349dfec44a59"
   },
   {
     "name": "player.js",
-    "hash": "641d1b4f772c5e4416aac09e8a546875f39b38f9093653052b426889834e6532"
+    "hash": "fa3c27e3360a8f46ad554011be0f5ea50bcf8f4b384a2e5db9f709a145349688"
   },
   {
     "name": "ranking.js",
-    "hash": "79f4c84e24a2e85ebb34cb84e63751d2d962e76c653bba3be694b65821996ca3"
+    "hash": "9259d3aab6dc93227ab3dec05b3de852bfd9cb6da9ef47ff744515389e53f9ea"
   },
   {
     "name": "set-language.js",
-    "hash": "4c05d1f8fb36d18e5f86c0450a3e16c0ff6e323ea6acd44462ebae616f71c484"
+    "hash": "c5c172e69294a9b6269c17889a95bc29d0c58230bbf471506aef8893a1b075a2"
   },
   {
     "name": "set-prefix.js",
-    "hash": "155d7338a7d49ca751ba6c7bfe88447e9ef16e966304217f3d4551b28fd72ec5"
+    "hash": "f2fd7adaca703e5da4217e44168aeaaed26f2a84bcd195817e162f9069258912"
   },
   {
     "name": "top.js",
-    "hash": "a7df8be38f9a5cbec2402dcf301f87cdf0b5b532f23106d461e47f6c85896751"
-  },
-  {
-    "name": "_hardest.js",
-    "hash": "1e5817309a0ea0dea3bcc253c2d768652794e8f397c5790542b4d366dea6d509"
+    "hash": "812fa96c376c2557f3373a8c6ea7a0968a2cb045858c88085712a0e5ace74002"
   }
 ]

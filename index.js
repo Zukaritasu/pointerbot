@@ -23,7 +23,7 @@ const path = require('path');
 const HASHLIST_FILENAME = './hashlist.json'
 
 function generateSHA256(filePath) {
-	return crypto.createHash('sha256').update(fs.readFileSync(filePath)).digest('hex')
+	return crypto.createHash('sha256').update(JSON.stringify(require(filePath))).digest('hex')
 }
 
 async function execJSFileSynch(command) {
@@ -43,12 +43,14 @@ async function execJSFileSynch(command) {
 const commandsPath = path.join(__dirname, 'src/commands');
 let commands = []
 fs.readdirSync(commandsPath).filter(file => file.endsWith('.js')).forEach(file => {
-	commands.push(
-		{
-			name: file,
-			absolutePath: path.join(commandsPath, file)
-		}
-	)
+	if (!file.startsWith('_')) {
+		commands.push(
+			{
+				name: file,
+				absolutePath: path.join(commandsPath, file)
+			}
+		)
+	}
 });
 
 if (commands.length != 0) {
