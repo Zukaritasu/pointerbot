@@ -446,7 +446,7 @@ function getPlayerListEmbed(players_json, begin, countListElements) {
 
 	const playerListEmbed = new EmbedBuilder()
 		.setColor(0x2F3136)
-		.setAuthor(embed.author)
+		.setAuthor(author)
 		.setTitle('Players')
 		.setDescription(description)
 		.setTimestamp()
