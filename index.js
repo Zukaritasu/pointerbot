@@ -22,6 +22,8 @@ const path = require('path');
 
 const HASHLIST_FILENAME = './hashlist.json'
 
+process.chdir(__dirname);
+
 function generateSHA256(filePath) {
 	return crypto.createHash('sha256').update(JSON.stringify(require(filePath))).digest('hex')
 }
