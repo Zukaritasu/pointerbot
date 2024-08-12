@@ -121,8 +121,12 @@ function getLeaderboardCountryEmbed(players, page, code, next) {
 		.setEmoji(emojis.id.arrowright)
 		.setStyle(ButtonStyle.Primary)
 		.setDisabled(utils.isNullOrUndefined(next))
+	const closeButton = new ButtonBuilder()
+		.setStyle(ButtonStyle.Danger)
+		.setEmoji(emojis.id.closeicon)
+		.setCustomId("close")
 
-	row.addComponents(backButton, followButton);
+	row.addComponents(backButton, followButton, closeButton);
 
 	let description = (() => {
 		let lines = '';
@@ -175,15 +179,20 @@ async function getDemonEmbed(demon) {
 	const row = new ActionRowBuilder()
 
 	const backButton = new ButtonBuilder()
-		.setLabel('Open in Pointercrate')
+		.setLabel('Pointercrate')
 		.setURL(`${urls.pointercrate}demonlist/permalink/${demon.id}`)
 		.setStyle(ButtonStyle.Link)
 	const followButton = new ButtonBuilder()
-		.setLabel('Open Video')
+		.setLabel('Video')
 		.setURL(`${demon.video}`)
 		.setStyle(ButtonStyle.Link)
 
-	row.addComponents(backButton, followButton);
+	const closeButton = new ButtonBuilder()
+		.setStyle(ButtonStyle.Danger)
+		.setEmoji(emojis.id.closeicon)
+		.setCustomId("close")
+
+	row.addComponents(backButton, followButton, closeButton);
 
 	return { embeds: [demon_embed], components: [row] };
 }
@@ -350,8 +359,12 @@ function getCountryEmbed(page) {
 		.setEmoji(emojis.id.arrowright)
 		.setStyle(ButtonStyle.Primary)
 		.setDisabled((countRows * page) > sortCountry.length)
+	const closeButton = new ButtonBuilder()
+		.setStyle(ButtonStyle.Danger)
+		.setEmoji(emojis.id.closeicon)
+		.setCustomId("close")
 
-	row.addComponents(backButton, followButton);
+	row.addComponents(backButton, followButton, closeButton);
 
 	const embed = new EmbedBuilder()
 		.setColor(EMBED_COLOR)
@@ -482,6 +495,45 @@ function getPlayerListEmbed(players_json, begin, countListElements) {
 	}
 }
 
+/*const __help_commands = (() => {
+	let commands = []
+	fs.readdirSync(commandsPath).filter(file => file.endsWith('.js') && !file.startsWith('_')).forEach(file => {
+		const command = require(path.join(commandsPath, file));
+		commands.set(command.data.name, command);
+	});
+})();*/
+
+/*function getComboHelpEmbed() {
+	const comboBox = new StringSelectMenuBuilder()
+		.setCustomId('player')
+		.setPlaceholder('Select a player')
+
+	for (let i = begin; i < players_json.length && i < begin + countListElements; i++) {
+
+		comboBox.addOptions(new StringSelectMenuOptionBuilder()
+			.setLabel(player.name)
+			.setValue(player.name)
+		);
+	}
+
+	const playerListEmbed = new EmbedBuilder();
+
+	let buttonsComponent = new ActionRowBuilder();
+	const closeButton = new ButtonBuilder()
+		.setCustomId('close')
+		.setLabel('X')
+		.setStyle(ButtonStyle.Primary)
+	buttonsComponent.addComponents(closeButton);
+		
+	let comboboxComponent = new ActionRowBuilder();
+	comboboxComponent.addComponents(comboBox);
+
+	return { 
+		embeds: [playerListEmbed], 
+		components: [buttonsComponent, comboboxComponent] 
+	}
+}*/
+
 module.exports = {
 	author,
 	getDemonEmbed,
@@ -491,5 +543,6 @@ module.exports = {
 	getCountryEmbed,
 	getLeaderboardCountryEmbed,
 	getLevelListEmbed,
-	getPlayerListEmbed
+	getPlayerListEmbed,
+	/*getComboHelpEmbed*/
 };

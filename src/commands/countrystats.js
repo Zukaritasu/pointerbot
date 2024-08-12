@@ -62,6 +62,9 @@ async function processLeaderboardByCountry(response, confirmation, interaction, 
             } else if (confirmation.customId === 'follow') {
                 page++;
                 url = responseJson.next
+            } else if (confirmation.customId === 'close') {
+                response.delete();
+                break;
             }
 
             responseJson = await request.getLeaderboardByCountry(url, country_code)
@@ -115,7 +118,10 @@ async function execute(_client, database, interaction) {
                     page--;
                 else if (confirmation.customId === 'follow')
                     page++;
-                else if (confirmation.customId === 'country') {
+                else if (confirmation.customId === 'close') {
+                    response.delete();
+                    break;
+                } else if (confirmation.customId === 'country') {
                     await processLeaderboardByCountry(response, confirmation, interaction, collectorFilter)
                     break;
                 }

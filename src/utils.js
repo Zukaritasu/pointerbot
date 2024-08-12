@@ -65,5 +65,36 @@ module.exports = {
 				await func(serverInfo)
 			}
 		}
+	},
+
+	/**
+	 * id: close
+	 * 
+	 * @param {ChatInputCommandInteraction} interaction 
+ 	 * @param {object} message
+	 */
+	async responseMessageAwaitClose(interaction, message) {
+		try {
+			let response = await interaction.editReply(message)
+
+			const collectorFilter = i => i.user.id === interaction.user.id;
+			let confirmation = await response.awaitMessageComponent(
+				{
+					filter: collectorFilter,
+					time: 300000 // 5 min
+				}
+			);
+
+			if (confirmation.customId === 'close') {
+				response.delete();
+			}
+		} catch (e) { // time error
+			console.log(e)
+			try {
+				await interaction.deleteReply();
+			} catch (err) {
+
+			}
+		}
 	}
 };

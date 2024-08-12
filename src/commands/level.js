@@ -96,12 +96,12 @@ async function waitResponseMessage(interaction, demonJson) {
  * @param {ChatInputCommandInteraction} interaction 
  * @param {string | number} option 
  */
-async function responseMessage(serverInfo, interaction, option) {
+async function responseMessage(_serverInfo, interaction, option) {
 	let demonJson = await getDemonJSON(option)
 	if (demonJson.error || 'message' in demonJson.data /* response error */) {
 		await interaction.editReply('Pointercrate API: an error has occurred when querying the level')
 	} else if (demonJson.data.length === 1) {
-		await interaction.editReply(await embed.getDemonEmbed(demonJson.data[0]))
+		await utils.responseMessageAwaitClose(interaction, await embed.getDemonEmbed(demonJson.data[0]));
 	} else if (demonJson.data.length === 0) {
 		await interaction.editReply('Pointercrate API: the name or position of the entered level does not exist')
 	} else {
@@ -137,7 +137,7 @@ async function execute(_client, database, interaction) {
 	await utils.validateServerInfo(interaction, database, false, false, async (serverInfo) => {
 		const option = await getUserInputOption(interaction);
 		if (utils.isNullOrUndefined(option)) {
-			await interaction.reply(`You have not entered either of the two options. Enter a correct option`);
+			await interaction.editReply(`You have not entered either of the two options. Enter a correct option`);
 		} else {
 			try {
 				await responseMessage(serverInfo, interaction, option)

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2022-2023 Zukaritasu
+ * Copyright (C) 2022-2024 Zukaritasu
  * 
  * his program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +20,11 @@ const utils = require('./utils');
 const { urls } = require('../resource.json');
 
 
+/**
+ * 
+ * @param {*} path 
+ * @returns 
+ */
 function getResponseJSON(path) {
 	return new Promise(function (resolve, reject) {
 		https.get(`${urls.pointercrate}${path}`, res => {
@@ -54,6 +59,12 @@ function getDemonFormatName(demon) {
 		demon.position > 150 ? demon.name : `*${demon.name}*`;
 }
 
+/**
+ * 
+ * @param {*} url 
+ * @param {*} code 
+ * @returns 
+ */
 async function getLeaderboardByCountry(url, code) {
 	let players = [];
 	let responseData = await getResponseJSON(url == null ? 
@@ -69,14 +80,6 @@ async function getLeaderboardByCountry(url, code) {
 			prev: responseData.page.get('prev'),
 		};
 	}
-/* while (true) {
-		for (const player of responseData.data)
-			players.push(player);
-		if (responseData.page.get('next') == undefined)
-			break;
-		responseData = await getResponseJSON(responseData.page.get('next'));
-    }
-	 */
 }
 
 /**

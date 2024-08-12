@@ -49,12 +49,14 @@
 	"emojis": {
 		"arrow": "<:gd_img_flag:1041402120454283434>",
 		"arrowleft": "<:arrowleft:1044790805501575228>",
-		"arrowright": "<:arrowright:1044790809804943410>"
+		"arrowright": "<:arrowright:1044790809804943410>",
+		"closeicon": "<:closeicon:1219429070266437693>"
 		,
 		"id": {
 			"arrow": "1041402120454283434",
 			"arrowleft": "1044790805501575228",
-			"arrowright": "1044790809804943410"
+			"arrowright": "1044790809804943410",
+			"closeicon": "1219429070266437693"
 		}
 	}
 }

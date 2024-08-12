@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const { Collection, Client } = require('discord.js');
+const { Collection, Client, Guild } = require('discord.js');
 const path = require('node:path');
 const fs = require('node:fs');
 const langInfo = require('../locale/info.json');
@@ -71,14 +71,18 @@ module.exports = {
      */
     getJsonErros: (lang) => { return getJsonByLanguage(lang, 'errors') },
 
-    /** @param {Client} client */
-    sendBotEntered: async (client) => {
-        const guild = client.guilds.cache.get(supportServer.id);
-        if (guild != null) {
-            const channel = guild.channels.cache.get((supportServer.notifyChannelID));
+    /** 
+     * @param {Client} client 
+     * @param {Guild} guild
+     */
+    sendBotEntered: async (client, guild) => {
+        const guildServerSupport = client.guilds.cache.get(supportServer.id);
+        if (guildServerSupport != null) {
+            const channel = guildServerSupport.channels.cache.get((supportServer.notifyChannelID));
             if (channel != null) {
                 try {
-                    channel.send(`The bot has been added to the server: ${guild.name} (id: ${guild.id}) ${guild.icon}`);
+                    channel.send(`The bot has been added to the server: ${guild.name} (id: ${guild.id}) ${guild.iconURL() ?? 
+                        "The server does not have an image"}`);
                 } catch (error) {
                     
                 }

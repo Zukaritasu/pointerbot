@@ -17,26 +17,22 @@ const { SlashCommandBuilder, ActivityType, Message, Client } = require('discord.
 const { Db } = require('mongodb');
 
 /** 
- * @param {Db} database 
- * @param {Message} interaction
+ * @param {Db} db
  * @param {string} hardest 
  */
-async function updateHardestLevel(database, message,  hardest) {
+async function updateHardestDemon(db, hardest) {
 	try {
-		const result = await database.collection('config').updateOne(
+		const result = await db.collection('config').updateOne(
 			{ type: 'playing' },
-			{ $set: { value: hardest } }
+			{ $set: { value: hardest }}
 		)
-
 		if (!result.acknowledged)
 			throw null
-		await message.reply({ content: 'The hardest update was successful!', 
-			ephemeral: true });
-		return true
+		return { message: 'The hardest update was successful!', 
+			succeded: true,  error: null }
 	} catch (error) {
-		await message.reply({ content: 'An unknown error occurred while changing hardest', 
-			ephemeral: true });
-		return false
+		return { message: 'An unknown error occurred while changing hardest', 
+			succeded: false, error: error }
 	}
 }
 
@@ -48,11 +44,21 @@ async function updateHardestLevel(database, message,  hardest) {
  */
 async function execute(client, database, message, array) {
 	if (array.length !== 0) {
+		const sendMessage = async (interaction, strMessage) => {
+			await interaction.reply(
+				{ 
+					content: strMessage, 
+			 		ephemeral: true 
+				}
+			);
+		}
+
 		const hardestLevel = array.join(' ')
-		if (await updateHardestLevel(database, message, hardestLevel)) {
+		const result = await updateHardestDemon(database, hardestLevel)
+		await sendMessage(message, result.message);
+		if (result.succeded)  {
 			client.user.presence.set({
-				activities: [
-					{
+				activities: [{
 						name: hardestLevel,
 						type: ActivityType.Playing
 					}
@@ -63,6 +69,7 @@ async function execute(client, database, message, array) {
 }
 
 module.exports = {
+	updateHardestDemon,
 	info: { 
 		name: 'hardest',
 		func: execute

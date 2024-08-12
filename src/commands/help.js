@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, ChatInputCommandInteraction } = require('discord.js');
 
 const botenv = require('../botenv');
 const utils = require('../utils');
@@ -28,9 +28,13 @@ const { Db } = require('mongodb');
  */
 async function execute(_client, database, interaction) {
 	await utils.validateServerInfo(interaction, database, false, false, async (serverInfo) => {
-		await interaction.editReply({
-			embeds: [botenv.getHelpEmbed(serverInfo.lang)]
-		});
+		/*if (interaction.user.id === "591640548490870805") {
+			await interaction.editReply("Hola");
+		} else {*/
+			await interaction.editReply({
+				embeds: [botenv.getHelpEmbed(serverInfo.lang)]
+			});
+		/*}*/
 	})
 }
 

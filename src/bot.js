@@ -21,6 +21,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { Db, MongoClient } = require('mongodb');
 const botenv = require('./botenv');
+const request = require('./request');
 
 (async () => {
 	/** @type Db */
@@ -70,5 +71,29 @@ const botenv = require('./botenv');
 
 	client.login(token).catch((error) => {
 		console.error(error);
+	}).then(() => {
+		console.log("Time: ", new Date().getTime())
+		// The top 1 level will be updated every 10 minutes
+		setInterval(async () => {
+			try {
+				const responseData = await request.getResponseJSON('api/v2/demons/listed?limit=1&after=0')
+				if (responseData.data.length !== 0) {
+					const hardestLevel = responseData.data[0].name;
+					if (hardestLevel !== client.user.presence.activities[0].name) {
+						await require('./commands/_hardest').updateHardestDemon(database, hardestLevel);
+						client.user.presence.set({
+							activities: [{
+									name: hardestLevel,
+									type: ActivityType.Playing
+								}
+							]
+						})
+					}
+					
+				}
+			} catch (error) {
+				console.error(error);
+			}
+		}, 600000);
 	});
 })()

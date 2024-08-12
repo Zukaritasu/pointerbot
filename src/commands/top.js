@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2022-2023 Zukaritasu
+ * Copyright (C) 2022-2024 Zukaritasu
  * 
  * his program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ module.exports = {
 			const responseData = await request.getResponseJSON('api/v2/demons/listed?limit=1&after=0')
 			const message = responseData.data.length === 0 ? 'Pointercrate API: has returned an empty field' : 
 				await embeds.getDemonEmbed(responseData.data[0])
-			await interaction.editReply(message);
+			await utils.responseMessageAwaitClose(interaction, message)
 		})
 	}
 };

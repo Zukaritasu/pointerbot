@@ -21,5 +21,5 @@ const botenv = require('../src/botenv')
 module.exports = {
 	name: Events.GuildCreate,
 	once: false,
-	execute: async (client, _database) => await botenv.sendBotEntered(client),
+	execute: async (client, _database, guild) => await botenv.sendBotEntered(client, guild),
 };

@@ -28,9 +28,9 @@ const COUNT_LIST_ELEMENTS = 15;
 
 /**
  * 
- * @param {any} interaction
- * @param {any} players
- * @returns
+ * @param {ChatInputCommandInteraction} interaction
+ * @param {array} players
+ * @returns object
  */
 async function waitUserResponse(interaction, players) {
 	let begin = 0;
@@ -58,7 +58,7 @@ async function waitUserResponse(interaction, players) {
  * Get basic info player
  * @param {*} name 
  */
-async function getPlayerForNameJSON(interaction, name) {
+async function getPlayerByName(interaction, name) {
 	const responseData = await request.getResponseJSON(`api/v1/players/ranking/?name_contains=${name.replace(' ', '+')}`);
 	const players = responseData.data;
 
@@ -87,12 +87,18 @@ async function execute(_client, database, interaction) {
 			if (player === null) {
 				await interaction.editReply(`Interaction error: No option entered`);
 			} else {
-				const confirm = await getPlayerForNameJSON(interaction, player.toLowerCase().trim());
-				if (confirm.message !== null) {
-					await interaction.editReply({ content: confirm.message, embeds: [], components: [] });
+				const confirm = await getPlayerByName(interaction, player.toLowerCase().trim());
+				if (confirm.message !== null) { // user does not exist or invalid selection
+					await interaction.editReply(
+						{ 
+							content: confirm.message, 
+							embeds: [], 
+							components: [] 
+						});
 				} else {
 					const playerEmbed = [
-						await embed.getPlayerEmbed(confirm.player, await request.getPlayerAllProgress(confirm.player.id))
+						await embed.getPlayerEmbed(confirm.player, 
+						await request.getPlayerAllProgress(confirm.player.id))
 					]
 					if (confirm.reply !== null) {
 						await confirm.reply.update({ embeds: playerEmbed, components: [] });
