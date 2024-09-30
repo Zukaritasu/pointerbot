@@ -77,9 +77,9 @@ module.exports = {
      */
     sendBotEntered: async (client, guild) => {
         const guildServerSupport = client.guilds.cache.get(supportServer.id);
-        if (guildServerSupport != null) {
+        if (guildServerSupport !== undefined) {
             const channel = guildServerSupport.channels.cache.get((supportServer.notifyChannelID));
-            if (channel != null) {
+            if (channel !== undefined) {
                 try {
                     channel.send(`The bot has been added to the server: ${guild.name} (id: ${guild.id}) ${guild.iconURL() ?? 
                         "The server does not have an image"}`);
