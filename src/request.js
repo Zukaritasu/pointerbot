@@ -133,7 +133,7 @@ async function getPlayerAllProgress(player_id) {
 
 async function getFirstVictor(demon_position, use_trophy) {
 	const responseData = await getResponseJSON(`api/v1/records/?progress=100&demon_position=${demon_position}&limit=1`);
-	if (responseData.data.length != 0)
+	if (responseData.data.length !== 0)
 		return utils.getUserNameBanned(responseData.data[0].player) + (use_trophy ? ' :trophy:' : '');
 	return 'unknown';
 }
