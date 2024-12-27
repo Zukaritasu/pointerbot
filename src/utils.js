@@ -17,6 +17,8 @@
 
 const { Db } = require('mongodb');
 const server = require('./server');
+const logger = require('./logger');
+const errorMessages = require('./error-messages');
 const { ChatInputCommandInteraction } = require('discord.js');
 
 module.exports = {
@@ -67,11 +69,16 @@ module.exports = {
 		}
 	},
 
+	
 	/**
-	 * id: close
-	 * 
-	 * @param {ChatInputCommandInteraction} interaction 
- 	 * @param {object} message
+	 * Sends a response message and awaits for a user interaction to close it.
+	 *
+	 * @async
+	 * @function responseMessageAwaitClose
+	 * @param {ChatInputCommandInteraction} interaction - The interaction object from the Discord API.
+	 * @param {Object} message - The message object to be sent as a response.
+	 * @returns {Promise<void>} - Resolves when the interaction is completed or closed.
+	 * @throws {Error} - Throws an error if the interaction fails or times out.
 	 */
 	async responseMessageAwaitClose(interaction, message) {
 		try {
@@ -86,14 +93,17 @@ module.exports = {
 			);
 
 			if (confirmation.customId === 'close') {
-				response.delete();
-			}
-		} catch (e) { // time error
-			console.log(e)
-			try {
 				await interaction.deleteReply();
-			} catch (err) {
-
+			}
+		} catch (e) {
+			if (e.message !== errorMessages.InteractionCollectorErrorTime) 
+				logger.ERR(e.message);
+			else {
+				try {
+					await interaction.deleteReply();
+				} catch (err) {
+					logger.ERR(err.message);
+				}
 			}
 		}
 	}
