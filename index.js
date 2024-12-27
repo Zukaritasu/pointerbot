@@ -19,6 +19,7 @@ const { fork } = require('child_process');
 const fs = require('fs');
 const crypto = require('crypto');
 const path = require('path');
+const logger = require('./src/logger')
 
 const HASHLIST_FILENAME = './hashlist.json'
 
@@ -28,14 +29,21 @@ function generateSHA256(filePath) {
 	return crypto.createHash('sha256').update(JSON.stringify(require(filePath))).digest('hex')
 }
 
+/**
+ * @param {string} command 
+ * @returns 
+ */
 async function execJSFileSynch(command) {
 	return !(await new Promise((resolve, reject) => {
 		fork(command).on('exit', (code) => {
-			console.log(`Subprocess is terminated with code ${code}`);
+			if (code != 0)
+				logger.ERR(`Subprocess is terminated with code ${code}`)
+			else
+				logger.INF(`Subprocess is terminated with code 0`)
 			resolve(code != 0)
 		}).on('error', (error) => {
+			console.error(`${error}`);
 			reject(true)
-			console.log(`${error}`);
 		}).on('message', (message) => {
 			console.log(`${message}`);
 		})
@@ -55,45 +63,52 @@ fs.readdirSync(commandsPath).filter(file => file.endsWith('.js')).forEach(file =
 	}
 });
 
+const writeHashlistFile = () => {
+	let new_haslist = []
+	commands.forEach(command => new_haslist.push(
+		{
+			name: command.name,
+			hash: generateSHA256(command.absolutePath)
+		}
+	))
+
+	fs.writeFileSync(HASHLIST_FILENAME, JSON.stringify(new_haslist, null, 2))
+}
+
 if (commands.length != 0) {
 	(async () => {
-		const writeHashlistFile = () => {
-			let new_haslist = []
-			commands.forEach(command => new_haslist.push(
-				{
-					name: command.name,
-					hash: generateSHA256(command.absolutePath)
-				}
-			))
-
-			fs.writeFileSync(HASHLIST_FILENAME, JSON.stringify(new_haslist, null, 2))
-		}
-
 		try {
 			if (!fs.existsSync(HASHLIST_FILENAME)) {
 				writeHashlistFile()
 				if (!(await execJSFileSynch('./src/restapi.js')))
 					return
 			} else {
+				/** @type {{name: string, hash: string}[]} */
 				let hl = require(HASHLIST_FILENAME)
-				for (let i = 0; i < commands.length; i++) {
-					const data = hl.find(data => data.name === commands[i].name)
-					if (data === undefined || generateSHA256(commands[i].absolutePath) !== data.hash) {
-						writeHashlistFile()
-						if (!(await execJSFileSynch('./src/restapi.js')))
-							return
-						break;
+				if (hl.length !== commands.length) {
+					writeHashlistFile()
+					if (!(await execJSFileSynch('./src/restapi.js')))
+						return
+				} else {
+					for (let i = 0; i < commands.length; i++) {
+						const data = hl.find(data => data.name === commands[i].name)
+						if (data === undefined || generateSHA256(commands[i].absolutePath) !== data.hash) {
+							writeHashlistFile()
+							if (!(await execJSFileSynch('./src/restapi.js')))
+								return
+							break;
+						}
 					}
 				}
 			}
 		} catch (error) {
-			console.error(error)
+			logger.ERR(error)
 			return
 		}
 
 		while (true) {
 			await execJSFileSynch('./src/bot.js')
-			setTimeout(() => {}, 5000);
+			setTimeout(() => { }, 5000);
 		}
 	})()
 }
