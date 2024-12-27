@@ -19,7 +19,6 @@ const { Collection, Client, Guild } = require('discord.js');
 const path = require('node:path');
 const fs = require('node:fs');
 const langInfo = require('../locale/info.json');
-const { supportServer } = require('../config.json')
 
 /**
  * @param {string} langCode 
@@ -70,23 +69,4 @@ module.exports = {
      * @returns {object} 
      */
     getJsonErros: (lang) => { return getJsonByLanguage(lang, 'errors') },
-
-    /** 
-     * @param {Client} client 
-     * @param {Guild} guild
-     */
-    sendBotEntered: async (client, guild) => {
-        const guildServerSupport = client.guilds.cache.get(supportServer.id);
-        if (guildServerSupport !== undefined) {
-            const channel = guildServerSupport.channels.cache.get((supportServer.notifyChannelID));
-            if (channel !== undefined) {
-                try {
-                    channel.send(`The bot has been added to the server: ${guild.name} (id: ${guild.id}) ${guild.iconURL() ?? 
-                        "The server does not have an image"}`);
-                } catch (error) {
-                    
-                }
-            }
-        }
-    }
 }
