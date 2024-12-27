@@ -22,6 +22,7 @@ const path = require('node:path');
 const { Db, MongoClient } = require('mongodb');
 const botenv = require('./botenv');
 const request = require('./request');
+const logger = require('./logger');
 
 (async () => {
 	/** @type Db */
@@ -30,9 +31,9 @@ const request = require('./request');
 	try {
 		database = (await (mongodb = new MongoClient(uriDatabase)).connect())
 			.db('pointerbot')
-		console.error('Database connection successful!');
+		logger.INF('Database connection successful!')
 	} catch (e) {
-		console.error(e);
+		logger.ERR(e)
 		return
 	}
 
@@ -70,9 +71,9 @@ const request = require('./request');
 	})
 
 	client.login(token).catch((error) => {
-		console.error(error);
+		logger.ERR(error);
 	}).then(() => {
-		console.log("Time: ", new Date().getTime())
+		logger.INF('Successfully Logged!');
 		// The top 1 level will be updated every 10 minutes
 		setInterval(async () => {
 			try {
@@ -89,10 +90,10 @@ const request = require('./request');
 							]
 						})
 					}
-					
 				}
 			} catch (error) {
-				console.error(error);
+				logger.ERR(error);
+				
 			}
 		}, 600000);
 	});
