@@ -21,13 +21,19 @@ const {
 const utils = require('../utils');
 const { Db } = require('mongodb');
 const { languages } = require('../../locale/info.json');
+const logger = require('../logger')
 
 /**
- * @param {Db} _database 
- * @param {ChatInputCommandInteraction} interaction 
- * @param {object} serverInfo 
- * @param {string} lang 
+ * Updates the language setting for a server in the database.
+ *
+ * @param {Db} database - The database connection object.
+ * @param {ChatInputCommandInteraction} interaction - The interaction object from the Discord API.
+ * @param {Object} serverInfo - Information about the server, including its ID.
+ * @param {string} lang - The new language code to set for the server.
+ * @returns {Promise<void>} - A promise that resolves when the operation is complete.
+ * @throws Will throw an error if the database update fails or if there is an issue sending the reply.
  */
+
 async function updateServerLang(database, interaction, serverInfo, lang) {
     try {
         const result = await database.collection('servers').updateOne(
@@ -39,15 +45,22 @@ async function updateServerLang(database, interaction, serverInfo, lang) {
             throw null
         await interaction.editReply('The change was successful!');
     } catch (error) {
-        await interaction.editReply('An unknown error occurred while changing the bot language');
+        logger.ERR(error);
+        try {
+            await interaction.editReply('An unknown error occurred while changing the bot language');
+        } catch (e) {
+            logger.ERR('Error sending reply');
+        }
     }
 }
 
-
-/** 
- * @param {Client} _client 
- * @param {Db} database 
- * @param {ChatInputCommandInteraction} interaction 
+/**
+ * Executes the set-language command.
+ *
+ * @param {Client} _client - The Discord client instance.
+ * @param {Db} database - The database connection object.
+ * @param {ChatInputCommandInteraction} interaction - The interaction object from the Discord API.
+ * @returns {Promise<void>} - A promise that resolves when the operation is complete.
  */
 async function execute(_client, database, interaction) {
     await utils.validateServerInfo(interaction, database, true, true, async (serverInfo) => {
@@ -66,6 +79,10 @@ module.exports = {
         .addStringOption(option =>
             option.setName('language')
                 .setDescription('Language')
-                .setRequired(true)),
+                .setRequired(true)
+                .addChoices(
+                    { name: 'Spanish', value: 'spanish' },
+                    { name: 'English', value: 'english' }
+                )),
     execute,
 };
