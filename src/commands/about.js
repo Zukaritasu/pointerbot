@@ -18,8 +18,8 @@ const {
 	ActionRowBuilder,
 	ButtonBuilder,
 	ButtonStyle,
-	ChatInputCommandInteraction, 
-	Client} = require('discord.js');
+	ChatInputCommandInteraction,
+	Client } = require('discord.js');
 
 const botenv = require('../botenv');
 const utils = require('../utils');
@@ -33,21 +33,25 @@ const resource = require('../../resource.json');
  */
 async function execute(_client, database, interaction) {
 	await utils.validateServerInfo(interaction, database, false, false, async (serverInfo) => {
-		utils.responseMessageAwaitClose(interaction, 
-			{ 
-				embeds: [botenv.getAboutEmbed(serverInfo.lang)], 
+		utils.responseMessageAwaitClose(interaction,
+			{
+				embeds: [botenv.getAboutEmbed(serverInfo.lang)],
 				components: [
 					new ActionRowBuilder().addComponents(
 						new ButtonBuilder()
 							.setLabel('Donate')
-								.setURL(resource.urls.DONATIONS)
+							.setURL(resource.urls.DONATIONS)
+							.setStyle(ButtonStyle.Link),
+						new ButtonBuilder()
+							.setLabel('GitHub')
+							.setURL('https://github.com/Zukaritasu/pointerbot')
 							.setStyle(ButtonStyle.Link),
 						new ButtonBuilder()
 							.setStyle(ButtonStyle.Danger)
-								.setEmoji(resource.emojis.id.closeicon)
+							.setEmoji(resource.emojis.id.closeicon)
 							.setCustomId("close")
 					)
-				] 
+				]
 			}
 		)
 	})
