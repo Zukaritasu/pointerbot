@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Zukaritasu
+// Copyright (C) 2023 - 2025 Zukaritasu
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@ const {
 
 const botenv = require('../botenv');
 const utils = require('../utils');
+const tts = require('../translations');
 const resource = require('../../resource.json');
 
 /* ============================================================== */
@@ -32,7 +33,7 @@ const resource = require('../../resource.json');
  * @param {ChatInputCommandInteraction} interaction 
  */
 async function execute(_client, database, interaction) {
-	await utils.validateServerInfo(interaction, database, false, false, async (serverInfo) => {
+	await utils.processServer(interaction, database, false, false, async (serverInfo) => {
 		utils.responseMessageAwaitClose(interaction,
 			{
 				embeds: [botenv.getAboutEmbed(serverInfo.lang)],
@@ -40,19 +41,19 @@ async function execute(_client, database, interaction) {
 					new ActionRowBuilder().addComponents(
 						new ButtonBuilder()
 							.setLabel('Donate')
-							.setURL(resource.urls.DONATIONS)
+								.setURL(resource.urls.DONATIONS)
 							.setStyle(ButtonStyle.Link),
 						new ButtonBuilder()
 							.setLabel('GitHub')
-							.setURL('https://github.com/Zukaritasu/pointerbot')
+								.setURL('https://github.com/Zukaritasu/pointerbot')
 							.setStyle(ButtonStyle.Link),
 						new ButtonBuilder()
 							.setStyle(ButtonStyle.Danger)
-							.setEmoji(resource.emojis.id.closeicon)
+								.setEmoji(resource.emojis.id.closeicon)
 							.setCustomId("close")
 					)
 				]
-			}
+			}, false
 		)
 	})
 }

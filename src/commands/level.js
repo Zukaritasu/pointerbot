@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2022-2023 Zukaritasu
+ * Copyright (C) 2022-2025 Zukaritasu
  * 
  * his program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,7 +61,7 @@ function getLevelListEmbed(demons, begin, countDemons) {
 	for (let i = begin; i < demons.length && i < begin + countDemons; i++) {
 		const demon = demons[i];
 		countOptions++;
-		description += `\`${`${(i + 1)}`.padStart(2, '0')}\` - ${demon.name} *by ${demon.publisher.name}*\n`;
+		description += `${(i + 1)}. **${demon.name}** *by ${demon.publisher.name}*\n`;
 		menu.addOptions(new StringSelectMenuOptionBuilder()
 			.setLabel(`${demon.name} by ${demon.publisher.name}`)
 			.setValue(`${i}`)
@@ -261,7 +261,7 @@ function getUserInputOption(interaction) {
  * @returns {Promise<void>} - A promise that resolves when the command execution is complete.
  */
 async function execute(_client, database, interaction) {
-	await utils.validateServerInfo(interaction, database, false, false, async (serverInfo) => {
+	await utils.processServer(interaction, database, false, false, async (serverInfo) => {
 		const option = getUserInputOption(interaction);
 		if (utils.isNullOrUndefined(option)) {
 			await interaction.editReply(`You have not entered either of the two options. Enter a correct option`);

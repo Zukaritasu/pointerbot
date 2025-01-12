@@ -1,4 +1,4 @@
-// Copyright (C) 2022 Zukaritasu
+// Copyright (C) 2022 - 2025 Zukaritasu
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -63,7 +63,7 @@ async function updateServerLang(database, interaction, serverInfo, lang) {
  * @returns {Promise<void>} - A promise that resolves when the operation is complete.
  */
 async function execute(_client, database, interaction) {
-    await utils.validateServerInfo(interaction, database, true, true, async (serverInfo) => {
+    await utils.processServer(interaction, database, true, true, async (serverInfo) => {
         const lang = interaction.options.getString('language').trim().toLowerCase()
         if (languages.find(value => value.name === lang) === undefined)
             await interaction.editReply('Language name entered is incomplete or not supported in this bot');

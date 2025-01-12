@@ -17,10 +17,12 @@
 
 const { Events, SlashCommandSubcommandBuilder } = require('discord.js');
 
+const logger = require('../src/logger');
+
 module.exports = {
 	name: Events.ClientReady,
 	once: true,
 	execute(client, _database, _interaction) {
-		console.log(`Ready! Logged in as ${client.user.tag}`);
+		logger.INF(`Ready! Logged in as ${client.user.tag}`)
 	},
 };

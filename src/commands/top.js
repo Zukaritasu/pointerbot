@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2022-2024 Zukaritasu
+ * Copyright (C) 2022-2025 Zukaritasu
  * 
  * his program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,7 +61,7 @@ module.exports = {
 		.setDescription('Demonlist Top 1 Level'),
 
 	async execute(_client, database, interaction) {
-		await utils.validateServerInfo(interaction, database, false, false, async (_serverInfo) => {
+		await utils.processServer(interaction, database, false, false, async (_serverInfo) => {
 			await demonlistTopLevel(interaction)
 		})
 	}

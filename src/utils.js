@@ -19,7 +19,8 @@ const { Db } = require('mongodb');
 const server = require('./server');
 const logger = require('./logger');
 const errorMessages = require('./error-messages');
-const { ChatInputCommandInteraction } = require('discord.js');
+const tts = require('./translations');
+const { ChatInputCommandInteraction, Message, ButtonStyle } = require('discord.js');
 
 module.exports = {
 	/**
@@ -69,18 +70,43 @@ module.exports = {
 		}
 	},
 
-	
+	/**
+	 * @param {ChatInputCommandInteraction} interaction
+	 * @param {Db} database
+	 * @param {boolean} ephemeral 
+	 * @param {boolean} usePermissions 
+	 * @param {function(object)} func 
+	 */
+	async processServer(interaction, database, ephemeral, usePermissions, func) {
+		try {
+			await interaction.deferReply({ ephemeral: ephemeral });
+			if (usePermissions && !server.isAdminOrOwner(interaction)) {
+				await interaction.editReply('You do not have sufficient privileges to perform this action');
+			} else {
+				const serverInfo = await server.getServerInfo(database, interaction.guildId)
+				if (serverInfo === null) {
+					await interaction.editReply('Error in querying server information');
+				} else {
+					await func(serverInfo)
+				}
+			}
+		} catch (error) {
+			logger.ERR(error.message);
+		}
+	},
+
+
 	/**
 	 * Sends a response message and awaits for a user interaction to close it.
 	 *
 	 * @async
 	 * @function responseMessageAwaitClose
 	 * @param {ChatInputCommandInteraction} interaction - The interaction object from the Discord API.
-	 * @param {Object} message - The message object to be sent as a response.
+	 * @param {Message} message - The message object to be sent as a response.
 	 * @returns {Promise<void>} - Resolves when the interaction is completed or closed.
 	 * @throws {Error} - Throws an error if the interaction fails or times out.
 	 */
-	async responseMessageAwaitClose(interaction, message) {
+	async responseMessageAwaitClose(interaction, message, autodelete = true, lang = 'english') {
 		try {
 			let response = await interaction.editReply(message)
 
@@ -96,14 +122,25 @@ module.exports = {
 				await interaction.deleteReply();
 			}
 		} catch (e) {
-			if (e.message !== errorMessages.InteractionCollectorErrorTime) 
-				logger.ERR(e.message);
-			else {
-				try {
-					await interaction.deleteReply();
-				} catch (err) {
-					logger.ERR(err.message);
+			try {
+				if (e.message !== errorMessages.InteractionCollectorErrorTime) {
+					logger.ERR(e.message);
+					await interaction.editReply(tts.getTranslation(lang, 'err_unknown'))
+				} else {
+					if (autodelete) {
+						await interaction.deleteReply();
+					} else {
+						message.components.at(0).components.forEach(button => {
+							if (button.style !== ButtonStyle.Link) {
+								button.setDisabled(true)
+							}
+						})
+
+						await interaction.editReply(message);
+					}
 				}
+			} catch (err) {
+				logger.ERR(err.message);
 			}
 		}
 	}

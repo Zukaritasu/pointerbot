@@ -8,7 +8,14 @@
 	},
 	"trophy": {
 		"extreme": {
-			"tops": [1, 25, 50, 75, 100, 125], 
+			"tops": [
+				1,
+				25,
+				50,
+				75,
+				100,
+				125
+			],
 			"trophys": [
 				"https://cdn.discordapp.com/attachments/1041217295743197225/1041369173198118922/trophy_1.png",
 				"https://cdn.discordapp.com/attachments/1041217295743197225/1041369173609168916/trophy_2.png",
@@ -20,7 +27,16 @@
 			"default": "https://cdn.discordapp.com/attachments/1041217295743197225/1041369172451541052/trophy_7.png"
 		},
 		"player": {
-			"tops": [1, 10, 25, 50, 100, 250, 500, 1000],
+			"tops": [
+				1,
+				10,
+				25,
+				50,
+				100,
+				250,
+				500,
+				1000
+			],
 			"trophys": [
 				"<:player_top_1:1042818507215220816>",
 				"<:player_top_10:1042818512453898300>",
@@ -34,7 +50,14 @@
 			"default": ""
 		},
 		"demon": {
-			"tops": [1, 25, 50, 75, 100, 125],
+			"tops": [
+				1,
+				25,
+				50,
+				75,
+				100,
+				125
+			],
 			"trophys": [
 				"<:1_trophy:1042821059474366474>",
 				"<:2_trophy:1042821061273718834>",
@@ -50,13 +73,42 @@
 		"arrow": "<:gd_img_flag:1041402120454283434>",
 		"arrowleft": "<:arrowleft:1044790805501575228>",
 		"arrowright": "<:arrowright:1044790809804943410>",
-		"closeicon": "<:closeicon:1219429070266437693>"
-		,
+		"closeicon": "<:closeicon:1219429070266437693>",
 		"id": {
 			"arrow": "1041402120454283434",
 			"arrowleft": "1044790805501575228",
 			"arrowright": "1044790809804943410",
 			"closeicon": "1219429070266437693"
 		}
+	},
+	"demons": {
+		"aux_image": "https://media.discordapp.net/attachments/1321574271671341107/1321574454089879633/Extreme_Demon.png",
+		"images": [
+			[
+				"https://media.discordapp.net/attachments/1321574271671341107/1321574414961348690/Demon.png",
+				"https://media.discordapp.net/attachments/1321574271671341107/1321574418304204810/Featured_Demon.png",
+				"https://media.discordapp.net/attachments/1321574271671341107/1321574417913872476/Epic_Hard_Demon.png",
+				"https://media.discordapp.net/attachments/1321574271671341107/1321574417448566874/Legendary_Hard_Demon.png",
+				"https://media.discordapp.net/attachments/1321574271671341107/1321574417200844810/Mythic_Hard_Demon.png"
+			],
+			[],
+			[],
+			[],
+			[],
+			[
+				"https://media.discordapp.net/attachments/1321574271671341107/1321574416832004157/Insane_Demon.png",
+				"https://media.discordapp.net/attachments/1321574271671341107/1321574416378761257/Featured_Insane_Demon.png",
+				"https://media.discordapp.net/attachments/1321574271671341107/1321574415904935936/Epic_Insane_Demon.png",
+				"https://media.discordapp.net/attachments/1321574271671341107/1321574415581839475/Legendary_Insane_Demon.png",
+				"https://media.discordapp.net/attachments/1321574271671341107/1321574415317733426/Mythic_Insane_Demon.png"
+			],
+			[
+				"https://media.discordapp.net/attachments/1321574271671341107/1321574454089879633/Extreme_Demon.png",
+				"https://media.discordapp.net/attachments/1321574271671341107/1321574455201501194/Featured_Extreme_Demon.png",
+				"https://media.discordapp.net/attachments/1321574271671341107/1321574454844854333/Epic_Extreme_Demon.png",
+				"https://media.discordapp.net/attachments/1321574271671341107/1321574454588870747/Legendary_Extreme_Demon.png",
+				"https://media.discordapp.net/attachments/1321574271671341107/1321574454350053497/Mythic_Extreme_Demon.png"
+			]
+		]
 	}
 }

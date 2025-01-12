@@ -17,6 +17,7 @@
 
 const { Db, Long } = require('mongodb');
 const { ChatInputCommandInteraction, PermissionFlagsBits } = require('discord.js');
+const logger = require('../src/logger');
 
 
 /** 
@@ -25,7 +26,7 @@ const { ChatInputCommandInteraction, PermissionFlagsBits } = require('discord.js
  */
 async function getServerInfo(database, id) {
     let server = await database.collection('servers').findOne({ serverId: `${id}` })
-    if (server == null) {
+    if (server === null) {
         const result = await database.collection('servers').insertOne(
             server = {
                 serverId: `${id}`,
@@ -36,7 +37,7 @@ async function getServerInfo(database, id) {
         if (result.acknowledged) {
             server._id = result.insertedId.id
         } else {
-            console.error(`[INSERT_DOCUMENT_ERROR] => ${JSON.stringify(server)}`)
+            logger.ERR(`Error inserting an object to the database`)
             return null
         }
     }

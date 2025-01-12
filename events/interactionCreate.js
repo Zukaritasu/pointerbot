@@ -17,6 +17,35 @@
 
 const { Events, ActivityType } = require('discord.js');
 
+/**
+ * Counts calls to bot commands. Function created to study the statistics
+ * of calls to the bot
+ * 
+ * @param {*} database 
+ * @param {*} command 
+ */
+async function calls(database, command) {
+    try {
+        let calls = await database.collection('calls').findOne({ type: command })
+        if (calls === null) {
+            await database.collection('calls').insertOne(
+                {
+                    type: command,
+                    count: 1
+                }
+            );
+
+        } else {
+            await database.collection('calls').updateOne(
+                { _id: calls._id },
+                { $set: { count: calls.count + 1 } }
+            )
+        }
+    } catch (error) {
+
+    }
+}
+
 module.exports = {
     name: Events.InteractionCreate,
     once: false,
@@ -24,6 +53,7 @@ module.exports = {
         if (interaction.isChatInputCommand()) {
             const command = interaction.client.commands.get(interaction.commandName);
             if (command !== null) {
+                calls(_database, interaction.commandName)
                 await command.execute(_client, _database, interaction);
             }
         }

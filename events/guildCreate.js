@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2023 Zukaritasu
+ * Copyright (C) 2023 - 2025 Zukaritasu
  * 
  * his program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,11 +15,32 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const { Events } = require('discord.js');
-const botenv = require('../src/botenv')
+const { Events, Client } = require('discord.js');
+const { supportServer } = require('../config.json')
+const logger = require('../src/logger');
+const { Guild } = require('discord.js');
+
+/**
+ * @param {Client} client 
+ * @param {Guild} guild 
+ */
+async function botJoined(client, guild) {
+	const guildServerSupport = client.guilds.cache.get(supportServer.id);
+	if (guildServerSupport) {
+		const channel = guildServerSupport.channels.cache.get((supportServer.notifyChannelID));
+		if (channel) {
+			try {
+				channel.send(`The bot has been added to the server: ${guild.name} (id: ${guild.id}) ${guild.iconURL() ??
+					"The server does not have an image"}`);
+			} catch (error) {
+				logger.ERR(error)
+			}
+		}
+	}
+}
 
 module.exports = {
 	name: Events.GuildCreate,
 	once: false,
-	execute: async (client, _database, guild) => await botenv.sendBotEntered(client, guild),
+	execute: async (client, _database, guild) => await botJoined(client, guild),
 };

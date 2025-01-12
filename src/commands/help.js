@@ -1,4 +1,4 @@
-// Copyright (C) 2022 Zukaritasu
+// Copyright (C) 2022 - 2025 Zukaritasu
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -27,14 +27,10 @@ const { Db } = require('mongodb');
  * @param {ChatInputCommandInteraction} interaction 
  */
 async function execute(_client, database, interaction) {
-	await utils.validateServerInfo(interaction, database, false, false, async (serverInfo) => {
-		/*if (interaction.user.id === "591640548490870805") {
-			await interaction.editReply("Hola");
-		} else {*/
-			await interaction.editReply({
-				embeds: [botenv.getHelpEmbed(serverInfo.lang)]
-			});
-		/*}*/
+	await utils.processServer(interaction, database, false, false, async (serverInfo) => {
+		await interaction.editReply({
+			embeds: [botenv.getHelpEmbed(serverInfo.lang)]
+		});
 	})
 }
 

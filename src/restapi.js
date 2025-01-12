@@ -21,6 +21,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const botenv = require('./botenv');
 const { clientId, token } = require('../config.json');
+const logger = require('../src/logger');
 
 /** ///////////// */
 
@@ -28,16 +29,16 @@ const rest = new REST().setToken(token);
 (async () => {
     try {
         const commands = botenv.getCommandsCollection().map(value => value.data.toJSON())
-        console.log(`Started refreshing ${commands.length} application (/) commands.`);
+        logger.INF(`Started refreshing ${commands.length} application (/) commands`)
 
         const data = await rest.put(
             Routes.applicationCommands(clientId),
             { body: commands }
         );
 
-        console.log(`Successfully reloaded ${data.length} application (/) commands.`);
+        logger.INF(`Successfully reloaded ${data.length} application (/) commands`);
     } catch (e) {
-        console.error(e);
+        logger.ERR(e)
         process.exit(1)
     }
 })();

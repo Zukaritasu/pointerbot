@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const { trophy } = require('../resource.json');
+const { trophy, demons } = require('../resource.json');
 
 module.exports = { 
 
@@ -35,5 +35,16 @@ module.exports = {
 			if (position <= trophy[type].tops[i])
 				return trophy[type].trophys[i];
 		return trophy[type].default;
-	} 
+	},
+
+	/**
+	 * @param {{ epic: string, demonDifficulty: string }} info 
+	 * @returns {string} image classification
+	 */
+	getDemonImageClassification(info) {
+		const dd = parseInt(info.demonDifficulty);
+		if (demons.images.length > dd && dd >= 0)
+			return demons.images[dd][0];
+		return demons.aux_image;
+	}
 };

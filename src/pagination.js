@@ -13,38 +13,98 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-const { ChatInputCommandInteraction, MessageComponentInteraction } = require('discord.js');
+const { ChatInputCommandInteraction, MessageComponentInteraction, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 
 const embeds = require('./embeds');
 const request = require('./request');
+const logger = require('./logger');
+const utils = require('./utils');
+const errorMessages = require('./error-messages');
 
 const PTC_RESPONSE_ERROR = 'Pointercrate API: an error occurred while querying the information on the server'
 
+
+/**
+ * @param {*} demons 
+ * @param {*} page 
+ * @param {*} title 
+ * @param {*} footer_text 
+ * @param {*} legacy 
+ * @returns 
+ */
+function getDemonlistEmbed(demons, page, title, footer_text, legacy) {
+    let description = (() => {
+        let lines = ``;
+        if (demons.length !== 0) {
+            const padCount = `${demons[demons.length - 1].position}`.length;
+            demons.forEach(demon => {
+                lines += `${`\`${`${demon.position}`.padStart(padCount, ' ')}\``} <:Extreme_Demon:1246531162638385302> **${demon.name}** *${utils.getUserNameBanned(demon.publisher)}*\n`;
+            });
+        }
+        return lines;
+    })();
+
+    return {
+        content: description,
+        components: [
+            new ActionRowBuilder().addComponents(
+                new ButtonBuilder()
+                    .setCustomId('back')
+                    .setEmoji('<:retroceder:1320736997941317715>')
+                    .setStyle(ButtonStyle.Primary)
+                    .setDisabled(page == 1),
+                new ButtonBuilder()
+                    .setCustomId('follow')
+                    .setEmoji('<:siguiente:1320749783505178725>')
+                    .setStyle(ButtonStyle.Primary)
+                    .setDisabled((!legacy && page == 3) || demons.length != 25),
+                new ButtonBuilder()
+                    .setStyle(ButtonStyle.Danger)
+                    .setEmoji('<:close:1320737181358227551>')
+                    .setCustomId("close")
+            )
+        ]
+    };
+}
+
+/**
+ * @param {*} interaction 
+ * @param {*} page 
+ * @param {*} after 
+ * @param {*} title 
+ * @param {*} footer 
+ * @returns 
+ */
 async function respondInteraction(interaction, page, after, title, footer) {
-    const responseData = await request.getResponseJSON(`api/v2/demons/listed?limit=25&after=${(25 * (page - 1)) + after }`);
+    const responseData = await request.getResponseJSON(`api/v2/demons/listed?limit=25&after=${(25 * (page - 1)) + after}`);
     let result = null;
     let responseError = null;
     let messageEmbed = null;
     if (!(responseData instanceof Error)) {
-        messageEmbed = embeds.getDemonlistEmbed(responseData.data, page, title, footer, after === 150);
+        messageEmbed = getDemonlistEmbed(responseData.data, page, title, footer, after === 150);
         if (interaction instanceof MessageComponentInteraction) {
             await interaction.update(messageEmbed);
+            result = interaction;
         } else {
             result = await interaction.editReply(messageEmbed);
         }
-    }
-    else
+    } else {
         responseError = responseData;
+    }
     return {
         interaction: result,
-        error: responseError, 
+        error: responseError,
         message: messageEmbed
     }
 }
 
+/**
+ * @param {*} interaction 
+ * @param {*} info 
+ */
 async function processInteraction(interaction, info) {
     let page = 1;
-    const collectorFilter = interaction => interaction.user.id === interaction.user.id;
+    const collectorFilter = i => i.user.id === interaction.user.id;
 
     let message = null;
     let response = await respondInteraction(interaction, page, info.after, info.title, info.getFooter(page));
@@ -54,39 +114,50 @@ async function processInteraction(interaction, info) {
         try {
             message = response.message;
             while (true) {
-                const confirmation = await response.interaction.awaitMessageComponent(
-                    {
-                        filter: collectorFilter,
-                        time: 60000
-                    });
-                if (confirmation.customId === 'back')
+                const confirmation = await response.interaction.awaitMessageComponent({
+                    filter: collectorFilter,
+                    time: 60000
+                });
+                if (confirmation.customId === 'back') {
                     page--;
-                else if (confirmation.customId === 'follow')
+                } else if (confirmation.customId === 'follow') {
                     page++;
-                const updateResponse = await respondInteraction(confirmation, page, info.after, info.title, info.getFooter(page));
-                if (updateResponse.error != null) {
-                    await confirmation.update(
-                        {
-                            content: PTC_RESPONSE_ERROR,
-                            embeds: [],
-                            components: []
-                        });
+                } else if (confirmation.customId === 'close') {
+                    try {
+                        await confirmation.deferUpdate();
+                        if (confirmation.message) {
+                            await confirmation.message.delete();
+                        } else {
+                            logger.ERR('Could not find the message to delete.');
+                        }
+                    } catch (error) {
+                        logger.ERR('Error deleting message:', error);
+                    }
                     break;
                 }
-                else
+                const updateResponse = await respondInteraction(confirmation, page, info.after, info.title, info.getFooter(page));
+                if (updateResponse.error != null) {
+                    await confirmation.update({
+                        content: PTC_RESPONSE_ERROR,
+                        embeds: [],
+                        components: []
+                    });
+                    break;
+                } else {
                     message = updateResponse.message;
+                }
             }
         } catch (e) {
-            console.log(e);
             try {
-                await interaction.editReply(
-                    {
-                        embeds: [message.embeds[0]],
-                        components: []
-                    }
-                );
+                if (e.message !== errorMessages.InteractionCollectorErrorTime) {
+                    logger.ERR(e.message);
+                    await interaction.editReply('An unknown error has occurred');
+                } else {
+                    message.components.at(0).components.forEach(button => button.setDisabled(true))
+                    await interaction.editReply(message);
+                }
             } catch (err) {
-                
+                logger.ERR('Error sending message: ' + err.message);
             }
         }
     }

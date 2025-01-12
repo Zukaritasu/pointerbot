@@ -1,4 +1,4 @@
-// Copyright (C) 2022 Zukaritasu
+// Copyright (C) 2022 - 2025 Zukaritasu
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ module.exports = {
 		.setName('extended')
 		.setDescription('List of extended demons in range 76 - 150'),
 	async execute(_client, database, interaction) {
-		await utils.validateServerInfo(interaction, database, false, false, async (_serverInfo) => {
+		await utils.processServer(interaction, database, false, false, async (_serverInfo) => {
 			await pagination.processInteraction(interaction,
 				{
 					after: 75,

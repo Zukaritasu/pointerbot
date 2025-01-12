@@ -1,0 +1,624 @@
+{
+    "data": [
+        {
+            "code": "AL",
+            "name": "Albania",
+            "image": "/static/demonlist/images/flags/al.svg"
+        },
+        {
+            "code": "DZ",
+            "name": "Algeria",
+            "image": "/static/demonlist/images/flags/dz.svg"
+        },
+        {
+            "code": "AD",
+            "name": "Andorra",
+            "image": "/static/demonlist/images/flags/ad.svg"
+        },
+        {
+            "code": "AR",
+            "name": "Argentina",
+            "image": "/static/demonlist/images/flags/ar.svg"
+        },
+        {
+            "code": "AM",
+            "name": "Armenia",
+            "image": "/static/demonlist/images/flags/am.svg"
+        },
+        {
+            "code": "AW",
+            "name": "Aruba",
+            "image": "/static/demonlist/images/flags/aw.svg"
+        },
+        {
+            "code": "AU",
+            "name": "Australia",
+            "image": "/static/demonlist/images/flags/au.svg"
+        },
+        {
+            "code": "AT",
+            "name": "Austria",
+            "image": "/static/demonlist/images/flags/at.svg"
+        },
+        {
+            "code": "AZ",
+            "name": "Azerbaijan",
+            "image": "/static/demonlist/images/flags/az.svg"
+        },
+        {
+            "code": "BH",
+            "name": "Bahrain",
+            "image": "/static/demonlist/images/flags/bh.svg"
+        },
+        {
+            "code": "BD",
+            "name": "Bangladesh",
+            "image": "/static/demonlist/images/flags/bd.svg"
+        },
+        {
+            "code": "BY",
+            "name": "Belarus",
+            "image": "/static/demonlist/images/flags/by.svg"
+        },
+        {
+            "code": "BE",
+            "name": "Belgium",
+            "image": "/static/demonlist/images/flags/be.svg"
+        },
+        {
+            "code": "BO",
+            "name": "Bolivia, Plurinational State of",
+            "image": "/static/demonlist/images/flags/bo.svg"
+        },
+        {
+            "code": "BA",
+            "name": "Bosnia and Herzegovina",
+            "image": "/static/demonlist/images/flags/ba.svg"
+        },
+        {
+            "code": "BR",
+            "name": "Brazil",
+            "image": "/static/demonlist/images/flags/br.svg"
+        },
+        {
+            "code": "BG",
+            "name": "Bulgaria",
+            "image": "/static/demonlist/images/flags/bg.svg"
+        },
+        {
+            "code": "KH",
+            "name": "Cambodia",
+            "image": "/static/demonlist/images/flags/kh.svg"
+        },
+        {
+            "code": "CA",
+            "name": "Canada",
+            "image": "/static/demonlist/images/flags/ca.svg"
+        },
+        {
+            "code": "CL",
+            "name": "Chile",
+            "image": "/static/demonlist/images/flags/cl.svg"
+        },
+        {
+            "code": "CN",
+            "name": "China",
+            "image": "/static/demonlist/images/flags/cn.svg"
+        },
+        {
+            "code": "CO",
+            "name": "Colombia",
+            "image": "/static/demonlist/images/flags/co.svg"
+        },
+        {
+            "code": "CD",
+            "name": "Congo, the Democratic Republic of the",
+            "image": "/static/demonlist/images/flags/cd.svg"
+        },
+        {
+            "code": "CR",
+            "name": "Costa Rica",
+            "image": "/static/demonlist/images/flags/cr.svg"
+        },
+        {
+            "code": "HR",
+            "name": "Croatia",
+            "image": "/static/demonlist/images/flags/hr.svg"
+        },
+        {
+            "code": "CU",
+            "name": "Cuba",
+            "image": "/static/demonlist/images/flags/cu.svg"
+        },
+        {
+            "code": "CY",
+            "name": "Cyprus",
+            "image": "/static/demonlist/images/flags/cy.svg"
+        },
+        {
+            "code": "CZ",
+            "name": "Czech Republic",
+            "image": "/static/demonlist/images/flags/cz.svg"
+        },
+        {
+            "code": "DK",
+            "name": "Denmark",
+            "image": "/static/demonlist/images/flags/dk.svg"
+        },
+        {
+            "code": "DO",
+            "name": "Dominican Republic",
+            "image": "/static/demonlist/images/flags/do.svg"
+        },
+        {
+            "code": "EC",
+            "name": "Ecuador",
+            "image": "/static/demonlist/images/flags/ec.svg"
+        },
+        {
+            "code": "EG",
+            "name": "Egypt",
+            "image": "/static/demonlist/images/flags/eg.svg"
+        },
+        {
+            "code": "SV",
+            "name": "El Salvador",
+            "image": "/static/demonlist/images/flags/sv.svg"
+        },
+        {
+            "code": "EE",
+            "name": "Estonia",
+            "image": "/static/demonlist/images/flags/ee.svg"
+        },
+        {
+            "code": "FI",
+            "name": "Finland",
+            "image": "/static/demonlist/images/flags/fi.svg"
+        },
+        {
+            "code": "FR",
+            "name": "France",
+            "image": "/static/demonlist/images/flags/fr.svg"
+        },
+        {
+            "code": "GE",
+            "name": "Georgia",
+            "image": "/static/demonlist/images/flags/ge.svg"
+        },
+        {
+            "code": "DE",
+            "name": "Germany",
+            "image": "/static/demonlist/images/flags/de.svg"
+        },
+        {
+            "code": "GH",
+            "name": "Ghana",
+            "image": "/static/demonlist/images/flags/gh.svg"
+        },
+        {
+            "code": "GR",
+            "name": "Greece",
+            "image": "/static/demonlist/images/flags/gr.svg"
+        },
+        {
+            "code": "GT",
+            "name": "Guatemala",
+            "image": "/static/demonlist/images/flags/gt.svg"
+        },
+        {
+            "code": "GG",
+            "name": "Guernsey",
+            "image": "/static/demonlist/images/flags/gg.svg"
+        },
+        {
+            "code": "GY",
+            "name": "Guyana",
+            "image": "/static/demonlist/images/flags/gy.svg"
+        },
+        {
+            "code": "HT",
+            "name": "Haiti",
+            "image": "/static/demonlist/images/flags/ht.svg"
+        },
+        {
+            "code": "VA",
+            "name": "Holy See (Vatican City State)",
+            "image": "/static/demonlist/images/flags/va.svg"
+        },
+        {
+            "code": "HN",
+            "name": "Honduras",
+            "image": "/static/demonlist/images/flags/hn.svg"
+        },
+        {
+            "code": "HK",
+            "name": "Hong Kong",
+            "image": "/static/demonlist/images/flags/hk.svg"
+        },
+        {
+            "code": "HU",
+            "name": "Hungary",
+            "image": "/static/demonlist/images/flags/hu.svg"
+        },
+        {
+            "code": "IS",
+            "name": "Iceland",
+            "image": "/static/demonlist/images/flags/is.svg"
+        },
+        {
+            "code": "IN",
+            "name": "India",
+            "image": "/static/demonlist/images/flags/in.svg"
+        },
+        {
+            "code": "ID",
+            "name": "Indonesia",
+            "image": "/static/demonlist/images/flags/id.svg"
+        },
+        {
+            "code": "IR",
+            "name": "Iran, Islamic Republic of",
+            "image": "/static/demonlist/images/flags/ir.svg"
+        },
+        {
+            "code": "IQ",
+            "name": "Iraq",
+            "image": "/static/demonlist/images/flags/iq.svg"
+        },
+        {
+            "code": "IE",
+            "name": "Ireland",
+            "image": "/static/demonlist/images/flags/ie.svg"
+        },
+        {
+            "code": "IL",
+            "name": "Israel",
+            "image": "/static/demonlist/images/flags/il.svg"
+        },
+        {
+            "code": "IT",
+            "name": "Italy",
+            "image": "/static/demonlist/images/flags/it.svg"
+        },
+        {
+            "code": "JM",
+            "name": "Jamaica",
+            "image": "/static/demonlist/images/flags/jm.svg"
+        },
+        {
+            "code": "JP",
+            "name": "Japan",
+            "image": "/static/demonlist/images/flags/jp.svg"
+        },
+        {
+            "code": "JO",
+            "name": "Jordan",
+            "image": "/static/demonlist/images/flags/jo.svg"
+        },
+        {
+            "code": "KZ",
+            "name": "Kazakhstan",
+            "image": "/static/demonlist/images/flags/kz.svg"
+        },
+        {
+            "code": "KR",
+            "name": "Korea, Republic of",
+            "image": "/static/demonlist/images/flags/kr.svg"
+        },
+        {
+            "code": "XK",
+            "name": "Kosovo",
+            "image": "/static/demonlist/images/flags/xk.svg"
+        },
+        {
+            "code": "KW",
+            "name": "Kuwait",
+            "image": "/static/demonlist/images/flags/kw.svg"
+        },
+        {
+            "code": "LA",
+            "name": "Lao People's Democratic Republic",
+            "image": "/static/demonlist/images/flags/la.svg"
+        },
+        {
+            "code": "LV",
+            "name": "Latvia",
+            "image": "/static/demonlist/images/flags/lv.svg"
+        },
+        {
+            "code": "LB",
+            "name": "Lebanon",
+            "image": "/static/demonlist/images/flags/lb.svg"
+        },
+        {
+            "code": "LY",
+            "name": "Libya",
+            "image": "/static/demonlist/images/flags/ly.svg"
+        },
+        {
+            "code": "LI",
+            "name": "Liechtenstein",
+            "image": "/static/demonlist/images/flags/li.svg"
+        },
+        {
+            "code": "LT",
+            "name": "Lithuania",
+            "image": "/static/demonlist/images/flags/lt.svg"
+        },
+        {
+            "code": "LU",
+            "name": "Luxembourg",
+            "image": "/static/demonlist/images/flags/lu.svg"
+        },
+        {
+            "code": "MK",
+            "name": "Macedonia, the Former Yugoslav Republic of",
+            "image": "/static/demonlist/images/flags/mk.svg"
+        },
+        {
+            "code": "MG",
+            "name": "Madagascar",
+            "image": "/static/demonlist/images/flags/mg.svg"
+        },
+        {
+            "code": "MY",
+            "name": "Malaysia",
+            "image": "/static/demonlist/images/flags/my.svg"
+        },
+        {
+            "code": "MT",
+            "name": "Malta",
+            "image": "/static/demonlist/images/flags/mt.svg"
+        },
+        {
+            "code": "MX",
+            "name": "Mexico",
+            "image": "/static/demonlist/images/flags/mx.svg"
+        },
+        {
+            "code": "MD",
+            "name": "Moldova, Republic of",
+            "image": "/static/demonlist/images/flags/md.svg"
+        },
+        {
+            "code": "ME",
+            "name": "Montenegro",
+            "image": "/static/demonlist/images/flags/me.svg"
+        },
+        {
+            "code": "MA",
+            "name": "Morocco",
+            "image": "/static/demonlist/images/flags/ma.svg"
+        },
+        {
+            "code": "NL",
+            "name": "Netherlands",
+            "image": "/static/demonlist/images/flags/nl.svg"
+        },
+        {
+            "code": "NZ",
+            "name": "New Zealand",
+            "image": "/static/demonlist/images/flags/nz.svg"
+        },
+        {
+            "code": "NI",
+            "name": "Nicaragua",
+            "image": "/static/demonlist/images/flags/ni.svg"
+        },
+        {
+            "code": "NG",
+            "name": "Nigeria",
+            "image": "/static/demonlist/images/flags/ng.svg"
+        },
+        {
+            "code": "NO",
+            "name": "Norway",
+            "image": "/static/demonlist/images/flags/no.svg"
+        },
+        {
+            "code": "OM",
+            "name": "Oman",
+            "image": "/static/demonlist/images/flags/om.svg"
+        },
+        {
+            "code": "PK",
+            "name": "Pakistan",
+            "image": "/static/demonlist/images/flags/pk.svg"
+        },
+        {
+            "code": "PS",
+            "name": "Palestine, State of",
+            "image": "/static/demonlist/images/flags/ps.svg"
+        },
+        {
+            "code": "PA",
+            "name": "Panama",
+            "image": "/static/demonlist/images/flags/pa.svg"
+        },
+        {
+            "code": "PY",
+            "name": "Paraguay",
+            "image": "/static/demonlist/images/flags/py.svg"
+        },
+        {
+            "code": "PE",
+            "name": "Peru",
+            "image": "/static/demonlist/images/flags/pe.svg"
+        },
+        {
+            "code": "PH",
+            "name": "Philippines",
+            "image": "/static/demonlist/images/flags/ph.svg"
+        },
+        {
+            "code": "PL",
+            "name": "Poland",
+            "image": "/static/demonlist/images/flags/pl.svg"
+        },
+        {
+            "code": "PT",
+            "name": "Portugal",
+            "image": "/static/demonlist/images/flags/pt.svg"
+        },
+        {
+            "code": "PR",
+            "name": "Puerto Rico",
+            "image": "/static/demonlist/images/flags/pr.svg"
+        },
+        {
+            "code": "QA",
+            "name": "Qatar",
+            "image": "/static/demonlist/images/flags/qa.svg"
+        },
+        {
+            "code": "RO",
+            "name": "Romania",
+            "image": "/static/demonlist/images/flags/ro.svg"
+        },
+        {
+            "code": "RU",
+            "name": "Russian Federation",
+            "image": "/static/demonlist/images/flags/ru.svg"
+        },
+        {
+            "code": "VC",
+            "name": "Saint Vincent and the Grenadines",
+            "image": "/static/demonlist/images/flags/vc.svg"
+        },
+        {
+            "code": "SA",
+            "name": "Saudi Arabia",
+            "image": "/static/demonlist/images/flags/sa.svg"
+        },
+        {
+            "code": "SN",
+            "name": "Senegal",
+            "image": "/static/demonlist/images/flags/sn.svg"
+        },
+        {
+            "code": "RS",
+            "name": "Serbia",
+            "image": "/static/demonlist/images/flags/rs.svg"
+        },
+        {
+            "code": "SC",
+            "name": "Seychelles",
+            "image": "/static/demonlist/images/flags/sc.svg"
+        },
+        {
+            "code": "SG",
+            "name": "Singapore",
+            "image": "/static/demonlist/images/flags/sg.svg"
+        },
+        {
+            "code": "SK",
+            "name": "Slovakia",
+            "image": "/static/demonlist/images/flags/sk.svg"
+        },
+        {
+            "code": "SI",
+            "name": "Slovenia",
+            "image": "/static/demonlist/images/flags/si.svg"
+        },
+        {
+            "code": "SO",
+            "name": "Somalia",
+            "image": "/static/demonlist/images/flags/so.svg"
+        },
+        {
+            "code": "ZA",
+            "name": "South Africa",
+            "image": "/static/demonlist/images/flags/za.svg"
+        },
+        {
+            "code": "ES",
+            "name": "Spain",
+            "image": "/static/demonlist/images/flags/es.svg"
+        },
+        {
+            "code": "SE",
+            "name": "Sweden",
+            "image": "/static/demonlist/images/flags/se.svg"
+        },
+        {
+            "code": "CH",
+            "name": "Switzerland",
+            "image": "/static/demonlist/images/flags/ch.svg"
+        },
+        {
+            "code": "TW",
+            "name": "Taiwan",
+            "image": "/static/demonlist/images/flags/tw.svg"
+        },
+        {
+            "code": "TH",
+            "name": "Thailand",
+            "image": "/static/demonlist/images/flags/th.svg"
+        },
+        {
+            "code": "TT",
+            "name": "Trinidad and Tobago",
+            "image": "/static/demonlist/images/flags/tt.svg"
+        },
+        {
+            "code": "TN",
+            "name": "Tunisia",
+            "image": "/static/demonlist/images/flags/tn.svg"
+        },
+        {
+            "code": "TR",
+            "name": "Turkey",
+            "image": "/static/demonlist/images/flags/tr.svg"
+        },
+        {
+            "code": "TM",
+            "name": "Turkmenistan",
+            "image": "/static/demonlist/images/flags/tm.svg"
+        },
+        {
+            "code": "TV",
+            "name": "Tuvalu",
+            "image": "/static/demonlist/images/flags/tv.svg"
+        },
+        {
+            "code": "UA",
+            "name": "Ukraine",
+            "image": "/static/demonlist/images/flags/ua.svg"
+        },
+        {
+            "code": "AE",
+            "name": "United Arab Emirates",
+            "image": "/static/demonlist/images/flags/ae.svg"
+        },
+        {
+            "code": "GB",
+            "name": "United Kingdom",
+            "image": "/static/demonlist/images/flags/gb.svg"
+        },
+        {
+            "code": "US",
+            "name": "United States",
+            "image": "/static/demonlist/images/flags/us.svg"
+        },
+        {
+            "code": "UY",
+            "name": "Uruguay",
+            "image": "/static/demonlist/images/flags/uy.svg"
+        },
+        {
+            "code": "UZ",
+            "name": "Uzbekistan",
+            "image": "/static/demonlist/images/flags/uz.svg"
+        },
+        {
+            "code": "VE",
+            "name": "Venezuela, Bolivarian Republic of",
+            "image": "/static/demonlist/images/flags/ve.svg"
+        },
+        {
+            "code": "VN",
+            "name": "Viet Nam",
+            "image": "/static/demonlist/images/flags/vn.svg"
+        }
+    ]
+}
