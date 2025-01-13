@@ -1,13 +1,8 @@
 {
     "title": "/player",
     "color": 3121744,
-    "fields": [
-        {
-            "name": "/main",
-            "value": "Displays a list of the levels that are in the top 75 of the Demonlist."
-        }
-    ],
+    "description": "Displays the information of a player who is registered in **Pointercrate**. The bot requires you to enter the player's name, and if there are name matches the bot will display a list of names of players registered in **Pointercrate**.",
     "footer": {
-        "text": "PointerBot"
+        "text": "PointerBot - Page 7/9"
     }
 }

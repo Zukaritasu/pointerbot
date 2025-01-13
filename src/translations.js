@@ -15,6 +15,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+const langInfo = require('../locale/info.json');
+const path = require('node:path');
+const fs = require('node:fs');
+
 const translations = {
     'english': require("../locale/translations/english.json")
 };
@@ -26,6 +30,19 @@ function getTranslation(lang, key, def = '') {
     return translation[key] || def;
 }
 
+/**
+ * @param {string} lang language name 
+ * @returns {string[]} list of files corresponding to the help
+ */
+function getHelpElementsTranslation(lang) {
+    const code = langInfo.languages.find(value => value.name === lang) ?? langInfo.languages[0].code
+    let dirpath = path.join(__dirname, `../locale/${code}/help`)
+    if (!fs.existsSync(dirpath))
+        dirpath = path.join(__dirname, `../locale/us/help`)
+    return fs.readdirSync(dirpath).filter(file => file.endsWith('.json') && !file.startsWith('_')).map(filePath => path.join(dirpath, filePath))
+}
+
 module.exports = {
-    getTranslation
+    getTranslation,
+    getHelpElementsTranslation
 }
