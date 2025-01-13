@@ -281,7 +281,7 @@ module.exports = {
 		.setDescription('Query a level by its position in the list or by its name')
 		.addIntegerOption(option =>
 			option.setName('position')
-				.setDescription('The position of the demon, range 1 - 200'))
+				.setDescription('The position of the demon'))
 		.addStringOption(option =>
 			option.setName('name')
 				.setDescription('The name of the demon')),
