@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-const { ChatInputCommandInteraction, MessageComponentInteraction, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { ChatInputCommandInteraction, MessageComponentInteraction, ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require('discord.js');
 
 const embeds = require('./embeds');
 const request = require('./request');
@@ -22,7 +22,7 @@ const utils = require('./utils');
 const errorMessages = require('./error-messages');
 
 const PTC_RESPONSE_ERROR = 'Pointercrate API: an error occurred while querying the information on the server'
-
+const MAX_TIMEOUT = 180000 // 3 min
 
 /**
  * @param {*} demons 
@@ -33,19 +33,23 @@ const PTC_RESPONSE_ERROR = 'Pointercrate API: an error occurred while querying t
  * @returns 
  */
 function getDemonlistEmbed(demons, page, title, footer_text, legacy) {
-    let description = (() => {
-        let lines = ``;
-        if (demons.length !== 0) {
-            const padCount = `${demons[demons.length - 1].position}`.length;
-            demons.forEach(demon => {
-                lines += `${`\`${`${demon.position}`.padStart(padCount, ' ')}\``} <:Extreme_Demon:1246531162638385302> **${demon.name}** *${utils.getUserNameBanned(demon.publisher)}*\n`;
-            });
-        }
-        return lines;
-    })();
+    let description = ''
+    if (demons.length !== 0) {
+        demons.forEach(demon => {
+            description += `${demon.position}. <:Extreme_Demon:1246531162638385302> **${demon.name}** *${utils.getUserNameBanned(demon.publisher)}*\n`;
+        });
+    }
+
+    const embed = new EmbedBuilder()
+    embed.setColor(embeds.COLOR)
+    embed.setAuthor(embeds.author)
+    embed.setTitle(title)
+    embed.setDescription(description)
+    embed.setTimestamp()
+    embed.setFooter({ text: footer_text });
 
     return {
-        content: description,
+        embeds: [embed],
         components: [
             new ActionRowBuilder().addComponents(
                 new ButtonBuilder()
@@ -116,7 +120,7 @@ async function processInteraction(interaction, info) {
             while (true) {
                 const confirmation = await response.interaction.awaitMessageComponent({
                     filter: collectorFilter,
-                    time: 60000
+                    time: MAX_TIMEOUT
                 });
                 if (confirmation.customId === 'back') {
                     page--;
