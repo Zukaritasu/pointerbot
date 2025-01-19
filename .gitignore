@@ -7,3 +7,4 @@
 /test
 /hashlist.json
 /package-lock.json
+/.db/*.db
