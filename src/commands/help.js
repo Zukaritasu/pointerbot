@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-const { SlashCommandBuilder, ChatInputCommandInteraction, ButtonBuilder, ButtonStyle, ActionRowBuilder } = require('discord.js');
+const { SlashCommandBuilder, ChatInputCommandInteraction, ButtonBuilder, ButtonStyle, ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder } = require('discord.js');
 
 const botenv = require('../botenv');
 const fs = require('node:fs');
@@ -55,9 +55,21 @@ async function execute(_client, database, interaction) {
 						.setStyle(ButtonStyle.Danger)
 				]
 
+				const menu = new StringSelectMenuBuilder()
+				menu.setCustomId('command')
+				menu.setPlaceholder(tts.getTranslation(serverInfo.lang, 'select_command'));
+
+				for (let i = 0; i < filePaths.length; i++) {
+					menu.addOptions(new StringSelectMenuOptionBuilder()
+						.setLabel(`/${filePaths[i].substring(filePaths[i].lastIndexOf('/') + 1, filePaths[i].lastIndexOf('.'))}`)
+						.setValue(i.toString())
+					);
+				}
+
 				const message = {
 					embeds: [null],
 					components: [
+						new ActionRowBuilder().addComponents(menu),
 						new ActionRowBuilder().addComponents(
 							buttons
 						)
@@ -90,6 +102,8 @@ async function execute(_client, database, interaction) {
 							index--
 						} else if (confirmation.customId === 'follow') {
 							index++
+						} else if (confirmation.customId === 'command') {
+							index = parseInt(confirmation.values[0])
 						} else {
 							await response.delete(); break;
 						}
@@ -97,6 +111,7 @@ async function execute(_client, database, interaction) {
 						if (error.message !== errorMessages.InteractionCollectorErrorTime) {
 							logger.ERR(e);
 						} else {
+							message.components.at(0).components.at(0).setDisabled()
 							buttons.forEach(button => button.setDisabled(true))
 							await interaction.editReply(message)
 						}

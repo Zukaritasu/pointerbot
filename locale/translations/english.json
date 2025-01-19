@@ -2,5 +2,6 @@
     "cancel": "Cancel",
     "donate": "Donate",
     "github": "GitHub",
+    "select_command": "Select a command",
     "err_unknown": "An unknown error has occurred"
 }
