@@ -92,7 +92,7 @@ module.exports = {
 			let confirmation = await response.awaitMessageComponent(
 				{
 					filter: collectorFilter,
-					time: 300000 // 5 min
+					time: 20000 // 5 min
 				}
 			);
 
@@ -109,7 +109,7 @@ module.exports = {
 						await interaction.deleteReply();
 					} else {
 						message.components.at(0).components.forEach(button => {
-							if (button.style !== ButtonStyle.Link) {
+							if (button.toJSON().style !== ButtonStyle.Link) {
 								button.setDisabled(true)
 							}
 						})
