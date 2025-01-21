@@ -3,6 +3,6 @@
     "color": 3121744,
     "description": "Displays a list with the ranking of players registered in **Pointercrate**. Optionally the bot requires you to enter the page number to display the exact list where the player is located in the ranking.",
     "footer": {
-        "text": "PointerBot - Page 8/9"
+        "text": ""
     }
 }

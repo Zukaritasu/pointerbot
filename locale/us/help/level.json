@@ -3,6 +3,6 @@
     "color": 3121744,
     "description": "Searches for a level that is within the **Pointercrate** register and displays its information. The bot requires you to enter the position or name of the level.",
     "footer": {
-        "text": "PointerBot - Page 5/9"
+        "text": ""
     }
 }

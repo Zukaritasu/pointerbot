@@ -1,13 +1,8 @@
 {
     "title": "/about",
     "color": 3121744,
-    "fields": [
-        {
-            "name": "/main",
-            "value": "Displays a list of the levels that are in the top 75 of the Demonlist."
-        }
-    ],
+    "description": "Muestra información sobre el bot y otros detalles importantes.",
     "footer": {
-        "text": "PointerBot"
+        "text": ""
     }
 }

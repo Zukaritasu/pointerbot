@@ -1,13 +1,8 @@
 {
     "title": "/extended",
     "color": 3121744,
-    "fields": [
-        {
-            "name": "/main",
-            "value": "Displays a list of the levels that are in the top 75 of the Demonlist."
-        }
-    ],
+    "description": "Muestra una lista de los niveles que están en la lista extendida del rango de los 76 - 150 primeros de la **Demonlist**.",
     "footer": {
-        "text": "PointerBot"
+        "text": ""
     }
 }

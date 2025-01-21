@@ -3,6 +3,6 @@
     "color": 3121744,
     "description": "Displays the information of a player who is registered in **Pointercrate**. The bot requires you to enter the player's name, and if there are name matches the bot will display a list of names of players registered in **Pointercrate**.",
     "footer": {
-        "text": "PointerBot - Page 7/9"
+        "text": ""
     }
 }

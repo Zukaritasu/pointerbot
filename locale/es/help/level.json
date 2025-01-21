@@ -1,13 +1,8 @@
 {
     "title": "/level",
     "color": 3121744,
-    "fields": [
-        {
-            "name": "/main",
-            "value": "Displays a list of the levels that are in the top 75 of the Demonlist."
-        }
-    ],
+    "description": "Busca un nivel que esté dentro del registro de **Pointercrate** y muestra su información. El bot requiere que introduzcas la posición o el nombre del nivel.",
     "footer": {
-        "text": "PointerBot"
+        "text": ""
     }
 }

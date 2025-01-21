@@ -1,0 +1,8 @@
+{
+    "title": "/nationalities",
+    "color": 3121744,
+    "description": "El bot muestra una lista de puntuaciones por nacionalidad de mayor a menor.",
+    "footer": {
+        "text": ""
+    }
+}

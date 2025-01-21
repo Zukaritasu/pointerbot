@@ -1,0 +1,8 @@
+{
+    "title": "/nationalities",
+    "color": 3121744,
+    "description": "The bot displays a list of scores by nationality from highest to lowest.",
+    "footer": {
+        "text": ""
+    }
+}
