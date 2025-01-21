@@ -56,27 +56,6 @@ module.exports = {
 	 * @param {boolean} usePermissions 
 	 * @param {function(object)} func 
 	 */
-	async validateServerInfo(interaction, database, ephemeral, usePermissions, func) {
-		await interaction.deferReply({ ephemeral: ephemeral });
-		if (usePermissions && !server.isAdminOrOwner(interaction)) {
-			await interaction.editReply('You do not have sufficient privileges to perform this action');
-		} else {
-			const serverInfo = await server.getServerInfo(database, interaction.guildId)
-			if (serverInfo === null) {
-				await interaction.editReply('Error in querying server information');
-			} else {
-				await func(serverInfo)
-			}
-		}
-	},
-
-	/**
-	 * @param {ChatInputCommandInteraction} interaction
-	 * @param {Db} database
-	 * @param {boolean} ephemeral 
-	 * @param {boolean} usePermissions 
-	 * @param {function(object)} func 
-	 */
 	async processServer(interaction, database, ephemeral, usePermissions, func) {
 		try {
 			await interaction.deferReply({ ephemeral: ephemeral });
@@ -94,7 +73,6 @@ module.exports = {
 			logger.ERR(error.message);
 		}
 	},
-
 
 	/**
 	 * Sends a response message and awaits for a user interaction to close it.
