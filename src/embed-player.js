@@ -1,20 +1,9 @@
 const {
-	EmbedBuilder,
-	ActionRowBuilder,
-	ButtonBuilder,
-	ButtonStyle,
-	StringSelectMenuBuilder,
-	StringSelectMenuOptionBuilder
+	EmbedBuilder
 } = require('discord.js');
 
 const resource = require('./resource');
-const request = require('./request');
 const utils = require('./utils');
-const { urls, emojis } = require('../resource.json');
-const countries = require('../locale/locale-info.json')
-const countries2 = require('../locale/countries.json')
-const axios = require('axios');
-const logger = require('./logger');
 const embeds = require('./embeds');
 
 
