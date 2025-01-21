@@ -42,7 +42,7 @@ async function updateServerLang(database, interaction, serverInfo, lang) {
         )
 
         if (!result.acknowledged)
-            throw null
+            throw new Error('An error occurred while updating a database field')
         await interaction.editReply('The change was successful!');
     } catch (error) {
         logger.ERR(error);
