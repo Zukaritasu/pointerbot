@@ -3,5 +3,8 @@
     "donate": "Donate",
     "github": "GitHub",
     "select_command": "Select a command",
-    "err_unknown": "An unknown error has occurred"
+    "select_player": "Select a player",
+    "select_country": "Select a country",
+    "err_unknown": "An unknown error has occurred",
+    "list_countries_stats": "List of Countries with stats"
 }

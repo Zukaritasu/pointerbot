@@ -3,5 +3,8 @@
     "donate": "Donar",
     "github": "GitHub",
     "select_command": "Selecciona un comando",
-    "err_unknown": "Ha ocurrido un error desconocido"
+    "select_player": "Selecciona un jugador",
+    "select_country": "Selecciona un país",
+    "err_unknown": "Ha ocurrido un error desconocido",
+    "list_countries_stats": "Lista de países con estadísticas"
 }
