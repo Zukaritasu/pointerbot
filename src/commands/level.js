@@ -214,17 +214,17 @@ async function waitResponseMessage(interaction, demonJson) {
 /**
  * Handles the response message for a level query interaction.
  *
- * @param {Object} _serverInfo - The server information (currently unused).
+ * @param {Object} serverInfo - The server information (currently unused).
  * @param {ChatInputCommandInteraction} interaction - The interaction object from the Discord API.
  * @param {string} option - The level name or position to query.
  * @returns {Promise<void>} - A promise that resolves when the response message has been handled.
  */
-async function responseMessage(_serverInfo, interaction, option) {
+async function responseMessage(serverInfo, interaction, option) {
 	const demonJson = await getDemonJSON(option)
 	if (demonJson.error || 'message' in demonJson.data /* response error */) {
 		await interaction.editReply('Pointercrate API: an error has occurred when querying the level')
 	} else if (demonJson.data.length === 1) {
-		await utils.responseMessageAwaitClose(interaction, await embedLevel.getDemonEmbed(demonJson.data[0]));
+		await utils.responseMessageAwaitClose(interaction, await embedLevel.getDemonEmbed(demonJson.data[0]), false, serverInfo.lang);
 	} else if (demonJson.data.length === 0) {
 		await interaction.editReply('Pointercrate API: the name or position of the entered level does not exist')
 	} else {
