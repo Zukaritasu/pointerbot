@@ -80,6 +80,7 @@ async function execute(_client, database, interaction) {
 					buttons[0].setDisabled(index - 1 < 0)
 					buttons[1].setDisabled(index + 1 == filePaths.length)
 					message.embeds[0] = require(filePaths[index])
+					message.embeds[0].footer.text = `PointerBot - Page ${index + 1}/${filePaths.length}`
 				}
 
 				const collectorFilter = i => i.user.id === interaction.user.id;
