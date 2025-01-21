@@ -232,5 +232,6 @@ module.exports = {
 	getFirstVictor,
 	getLeaderboardByCountry,
 	getFirstVictorInfo,
-	getLevelClassification
+	getLevelClassification,
+	getNationalities: () => getResponseJSON('api/v1/nationalities/ranking')
 };
