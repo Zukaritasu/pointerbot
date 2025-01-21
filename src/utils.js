@@ -92,7 +92,7 @@ module.exports = {
 			let confirmation = await response.awaitMessageComponent(
 				{
 					filter: collectorFilter,
-					time: 20000 // 5 min
+					time: 300000 // 5 min
 				}
 			);
 
