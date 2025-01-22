@@ -20,7 +20,8 @@ const path = require('node:path');
 const fs = require('node:fs');
 
 const translations = {
-    'english': require("../locale/translations/english.json")
+    'english': require("../locale/translations/english.json"),
+    'spanish': require("../locale/translations/spanish.json")
 };
 
 function getTranslation(lang, key, def = '') {
