@@ -19,6 +19,7 @@ The bot currently has no support for executing commands using prefixes, it only 
 | /top | Displays the current top 1 level of the Demonlist |
 | /ranking | Displays a list with the ranking of players registered in Pointercrate. Optionally the bot requires you to enter the page number to display the exact list where the player is located in the ranking |
 | /countrystats | Displays player statistics by country |
+| /nationalities | The bot displays a list of scores by nationality |
 
 # Support
 
