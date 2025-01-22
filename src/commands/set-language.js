@@ -16,7 +16,7 @@
 const {
     SlashCommandBuilder,
     Client,
-    ChatInputCommandInteraction} = require('discord.js');
+    ChatInputCommandInteraction } = require('discord.js');
 
 const utils = require('../utils');
 const { Db } = require('mongodb');
@@ -63,13 +63,17 @@ async function updateServerLang(database, interaction, serverInfo, lang) {
  * @returns {Promise<void>} - A promise that resolves when the operation is complete.
  */
 async function execute(_client, database, interaction) {
-    await utils.processServer(interaction, database, true, true, async (serverInfo) => {
-        const lang = interaction.options.getString('language').trim().toLowerCase()
-        if (languages.find(value => value.name === lang) === undefined)
-            await interaction.editReply('Language name entered is incomplete or not supported in this bot');
-        else 
-            await updateServerLang(database, interaction, serverInfo, lang)
-    })
+    try {
+        await utils.processServer(interaction, database, true, true, async (serverInfo) => {
+            const lang = interaction.options.getString('language').trim().toLowerCase()
+            if (!languages.find(value => value.name === lang))
+                await interaction.editReply('Language name entered is incomplete or not supported in this bot');
+            else
+                await updateServerLang(database, interaction, serverInfo, lang)
+        })
+    } catch (error) {
+        logger.ERR(error)
+    }
 }
 
 module.exports = {
