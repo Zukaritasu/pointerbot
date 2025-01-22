@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const { Client, GatewayIntentBits, ActivityType, Collection } = require('discord.js');
+const { Client, GatewayIntentBits, ActivityType, Collection, Guild, IntentsBitField } = require('discord.js');
 const { token, uriDatabase } = require('../config.json');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -43,7 +43,9 @@ const logger = require('./logger');
 	}) ?? { value: '<Unknown>' }
 
 	const client = new Client({
-		intents: [],
+		intents: [
+			GatewayIntentBits.Guilds
+		],
 		presence: {
 			activities: [
 				{
