@@ -22,22 +22,28 @@ const {
     ButtonBuilder,
     ButtonStyle,
     EmbedBuilder,
-    Client
+    Client,
+    MessageComponentInteraction
 } = require('discord.js');
 
 const request = require('../request')
 const embeds = require('../embeds')
 const utils = require('../utils')
 const botenv = require('../botenv')
+const tts = require('../translations')
 const logger = require('../logger')
 const countriesJson = require('../../locale/countries.json')
 const errorMessages = require('../error-messages');
 const { Db } = require('mongodb');
 
+// +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ //
+
 const PTC_RESPONSE_ERROR = 'Pointercrate API: the country has no player statistics'
 const MENU_PAGE_SIZE = 20
 const MAX_PLAYERS_PER_PAGE = 15
+const TIMEOUT = 180000 // 3 min
 
+// +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ //
 
 /**
  * @param {String} countryCode 
@@ -52,12 +58,13 @@ function getFlagEmoji(countryCode) {
 /**
  * 
  * @param {number} page 
+ * @param {string} lang 
  * @returns 
  */
-function getCountryEmbed(page) {
+function getCountryEmbed(page, lang) {
     const menu = new StringSelectMenuBuilder()
     menu.setCustomId('country')
-    menu.setPlaceholder('Select a country');
+    menu.setPlaceholder(tts.getTranslation(lang, 'select_country'));
 
     const countries = countriesJson.data.sort(function (a, b) {
         if (a.name.charCodeAt(0) < b.name.charCodeAt(0))
@@ -82,7 +89,7 @@ function getCountryEmbed(page) {
             new EmbedBuilder()
                 .setColor(embeds.COLOR)
                 .setAuthor(embeds.author)
-                .setTitle('List of Countries with stats')
+                .setTitle(tts.getTranslation(lang, 'list_countries_stats'))
                 .setDescription(description)
                 .setFooter({ text: `Page ${page}` })
                 .setTimestamp()
@@ -146,6 +153,10 @@ function getLeaderboardCountryEmbed(players, numPage, countryCode, next) {
             new ActionRowBuilder()
                 .addComponents(
                     new ButtonBuilder()
+                        .setCustomId('countries')
+                        .setEmoji('<:three_rows:1331387969659080744>')
+                        .setStyle(ButtonStyle.Secondary),
+                    new ButtonBuilder()
                         .setCustomId('back')
                         .setEmoji('<:retroceder:1320736997941317715>')
                         .setStyle(ButtonStyle.Primary)
@@ -170,7 +181,7 @@ function getLeaderboardCountryEmbed(players, numPage, countryCode, next) {
  * @param {*} confirmation 
  * @param {*} interaction 
  * @param {*} collectorFilter 
- * @returns {Promise<boolean>}
+ * @returns {Promise<MessageComponentInteraction | null>}
  */
 async function processLeaderboardByCountry(response, confirmation, interaction, collectorFilter) {
     let page = 0;
@@ -184,7 +195,7 @@ async function processLeaderboardByCountry(response, confirmation, interaction, 
                 components: []
             }
         );
-        return
+        return null
     }
 
     let message = null;
@@ -198,7 +209,7 @@ async function processLeaderboardByCountry(response, confirmation, interaction, 
             confirmation = await response.awaitMessageComponent(
                 {
                     filter: collectorFilter,
-                    time: 60000
+                    time: TIMEOUT
                 }
             );
 
@@ -212,6 +223,8 @@ async function processLeaderboardByCountry(response, confirmation, interaction, 
             } else if (confirmation.customId === 'close') {
                 response.delete();
                 break;
+            } else if (confirmation.customId === 'countries') {
+                return confirmation
             }
 
             responseJson = await request.getLeaderboardByCountry(url, country_code, MAX_PLAYERS_PER_PAGE)
@@ -223,7 +236,7 @@ async function processLeaderboardByCountry(response, confirmation, interaction, 
                         components: []
                     }
                 );
-                return
+                return null
             }
             message = getLeaderboardCountryEmbed(responseJson.players, page,
                 `${country_code}`.toLowerCase(), responseJson.next);
@@ -244,7 +257,7 @@ async function processLeaderboardByCountry(response, confirmation, interaction, 
         }
     }
 
-    return true // close
+    return null // close
 }
 
 /**
@@ -261,16 +274,17 @@ async function execute(_client, database, interaction) {
             while (true) {
                 const funcReply = confirmation instanceof ChatInputCommandInteraction ? interaction.editReply.bind(interaction) :
                     confirmation.update.bind(confirmation);
-                const response = await funcReply(getCountryEmbed(page));
-                confirmation = await response.awaitMessageComponent({ filter: collectorFilter, time: 60000 });
+                const response = await funcReply(getCountryEmbed(page, serverInfo.lang));
+                confirmation = await response.awaitMessageComponent({ filter: collectorFilter, time: TIMEOUT });
 
                 switch (confirmation.customId) {
                     case 'back': page--; break;
                     case 'follow': page++; break;
                     case 'close': await response.delete(); break;
                     default:
-                        await processLeaderboardByCountry(response, confirmation, interaction, collectorFilter);
-                        return;
+                        if (!(confirmation = await processLeaderboardByCountry(response, confirmation, 
+                                interaction, collectorFilter)))
+                            return;
                 }
             }
         } catch (e) {
@@ -279,13 +293,7 @@ async function execute(_client, database, interaction) {
                     logger.ERR(e);
                     await interaction.editReply('An unknown error has occurred');
                 } else {
-                    await interaction.editReply(
-                        {
-                            content: botenv.getJsonErros(serverInfo).COUNTRY_NOT_SELECTED,
-                            embeds: [],
-                            components: []
-                        }
-                    );
+                    await interaction.deleteReply();
                 }
             } catch (err) {
                 logger.ERR('Error sending message: ' + err.message);
