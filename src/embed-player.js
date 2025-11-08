@@ -100,7 +100,7 @@ function getFieldsDemons(fieldTitle, demons, isCompleted, useVerifier) {
  */
 function getPlayerEmbed(player, demons) {
     const embed = new EmbedBuilder()
-    embed.setColor(0x2f9960)
+    embed.setColor(embeds.COLOR)
     embed.setAuthor(embeds.author)
     embed.setTitle(player.name)
     embed.addFields(

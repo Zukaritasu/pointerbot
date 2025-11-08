@@ -16,7 +16,7 @@
  */
 
 module.exports = {
-	COLOR: 0x2f9960,
+	COLOR: 0xf094a6,
 	/*author: {
 		name: 'PointerBot',
 		iconURL: urls.favicon
