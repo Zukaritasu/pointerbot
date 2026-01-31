@@ -15,10 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const { Client, GatewayIntentBits, ActivityType, Collection, Guild, IntentsBitField } = require('discord.js');
+const { Client, GatewayIntentBits, ActivityType } = require('discord.js');
 const { token, uriDatabase } = require('../config.json');
-const fs = require('node:fs');
-const path = require('node:path');
 const { Db, MongoClient } = require('mongodb');
 const botenv = require('./botenv');
 const request = require('./request');

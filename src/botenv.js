@@ -49,6 +49,7 @@ module.exports = {
         return commands
     },
 
+    /** @returns {Array<object>} */
     getPrivateCommands: () => {
         const commandsPath = path.join(__dirname, '../src/commands');
         return fs.readdirSync(commandsPath)
@@ -56,14 +57,32 @@ module.exports = {
             .map(file => require(path.join(commandsPath, file)))
     },
 
+    /** @returns {Array<object>} */
     getEventsCollection: () => {
         const eventsPath = path.join(__dirname, '../events');
         return fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'))
             .map(file => require(path.join(eventsPath, file)))
     },
 
+    /** @returns {Array<object>} */
+    getButtonsCollection: () => {
+        const buttonsPath = path.join(__dirname, '../src/buttons');
+        return fs.readdirSync(buttonsPath).filter(file => file.endsWith('.js'))
+            .map(file => require(path.join(buttonsPath, file)))
+    },
+
+    /**
+     * @param {string} lang
+     * @returns {object} 
+     */
     getAboutEmbed: (lang) => { return getJsonByLanguage(lang, 'about') },
+
+    /**
+     * @param {string} lang
+     * @returns {object} 
+     */
     getHelpEmbed: (lang) => { return getJsonByLanguage(lang, 'help') },
+    
     /**
      * @param {string} lang
      * @returns {object} 

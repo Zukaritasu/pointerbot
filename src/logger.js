@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2022-2024 Zukaritasu
+ * Copyright (C) 2022-2026 Zukaritasu
  * 
  * his program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,40 +18,53 @@
 const fs = require('fs');
 const moment = require('moment');
 
+
+// @ts-check
+
 const offset = -4; // UTC offset for Venezuela Time (VET) is -4 hours
 
 const dbgStream = fs.createWriteStream('./log/service_dbg.log', { flags: 'a' });
 
 function log(level, logFunction, args) {
-  const localTime = moment().utcOffset(offset);
-  logFunction(`[${level}][${localTime.format('YYYY.MM.DD - HH:mm:ss.SSS')}] ${args.join(' ')}`);
+	const localTime = moment().utcOffset(offset);
+	logFunction(`[${level}][${localTime.format('YYYY.MM.DD - HH:mm:ss.SSS')}] ${args.join(' ')}`);
 }
 
 function INF(...args) {
-  log('INF', console.log, args);
+	log('INF', console.log, args);
 }
 
 function WAR(...args) {
-  log('WAR', console.log, args);
+	log('WAR', console.log, args);
 }
 
 function ERR(...args) {
-  log('ERR', console.error, args);
+	const formatted = args.map(arg => {
+		if (arg instanceof Error) {
+			return [
+				`${arg.name}: ${arg.message}`,
+				...arg.stack?.split('\n').slice(1).map(line => `    at ${line.trim()}`)
+			].join('\n');
+		}
+		return arg;
+	});
+
+	log('ERR', console.error, formatted);
 }
 
 function DBG(...args) {
-  log('DBG', (...args_dbg) => {
-    dbgStream.write(`${args_dbg.join(' ')}\n`, (err) => {
-      if (err) {
-        ERR('Error writing to service_dbg.log:', err);
-      }
-    });
-  }, args);
+	log('DBG', (...args_dbg) => {
+		dbgStream.write(`${args_dbg.join(' ')}\n`, (err) => {
+			if (err) {
+				ERR('Error writing to service_dbg.log:', err);
+			}
+		});
+	}, args);
 }
 
 module.exports = {
-  INF,
-  WAR,
-  ERR,
-  DBG
+	INF,
+	WAR,
+	ERR,
+	DBG
 };

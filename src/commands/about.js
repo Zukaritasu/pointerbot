@@ -23,12 +23,11 @@ const {
 
 const botenv = require('../botenv');
 const utils = require('../utils');
-const tts = require('../translations');
 const resource = require('../../resource.json');
 
 /* ============================================================== */
 
-/** 
+/**
  * @param {Client} _client 
  * @param {ChatInputCommandInteraction} interaction 
  */

@@ -24,23 +24,42 @@ const translations = {
     'spanish': require("../locale/translations/spanish.json")
 };
 
+/**
+ * Retrieves a translated string based on the provided language and key.
+ * If the language is not found, it defaults to English. If the key is missing, 
+ * it returns the specified default value.
+ * 
+ * @param {string} lang - The language code (e.g., 'english', 'spanish').
+ * @param {string} key - The unique identifier for the translation string.
+ * @param {string} [def=''] - The default value to return if the key is not found.
+ * @returns {string} The translated text or the default value.
+ */
 function getTranslation(lang, key, def = '') {
-    let translation = translations[lang]
+    let translation = translations[lang];
     if (!translation)
-        translation = translations.english
+        translation = translations.english;
     return translation[key] || def;
 }
 
 /**
- * @param {string} lang language name 
- * @returns {string[]} list of files corresponding to the help
+ * Retrieves a list of absolute file paths for help elements in the specified language.
+ * * If the directory for the requested language does not exist, it defaults to the 
+ * English ('us') locale help directory. Only .json files that do not start 
+ * with an underscore are included.
+ * 
+ * @param {string} lang - The display name of the language (e.g., 'Spanish').
+ * @returns {string[]} An array of absolute paths to the JSON help files.
  */
 function getHelpElementsTranslation(lang) {
-    const code = langInfo.languages.find(value => value.name === lang) ?? langInfo.languages[0].code
-    let dirpath = path.join(__dirname, `../locale/${code}/help`)
+    const code = langInfo.languages.find(value => value.name === lang) ?? langInfo.languages[0].code;
+    let dirpath = path.join(__dirname, `../locale/${code}/help`);
+    
     if (!fs.existsSync(dirpath))
-        dirpath = path.join(__dirname, `../locale/us/help`)
-    return fs.readdirSync(dirpath).filter(file => file.endsWith('.json') && !file.startsWith('_')).map(filePath => path.join(dirpath, filePath))
+        dirpath = path.join(__dirname, `../locale/us/help`);
+        
+    return fs.readdirSync(dirpath)
+        .filter(file => file.endsWith('.json') && !file.startsWith('_'))
+        .map(filePath => path.join(dirpath, filePath));
 }
 
 module.exports = {

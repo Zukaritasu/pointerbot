@@ -33,7 +33,6 @@ const logger = require('../logger')
  * @returns {Promise<void>} - A promise that resolves when the operation is complete.
  * @throws Will throw an error if the database update fails or if there is an issue sending the reply.
  */
-
 async function updateServerLang(database, interaction, serverInfo, lang) {
     try {
         const result = await database.collection('servers').updateOne(
