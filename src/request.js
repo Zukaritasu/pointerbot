@@ -67,6 +67,13 @@ function getResponseJSON(path) {
                 return reject(new Error('No response headers received'));
             }
 
+			if (res.statusCode === 301 || res.statusCode === 302) {
+				const newLocation = res.headers['location'];
+				if (newLocation) {
+                    return resolve(getResponseJSON(newLocation.replace('https://www.pointercrate.com', '')));
+                }
+			}
+
 			/** @type {Buffer[]} */
 			let data = [];
 			res.on('data', chunk => { data.push(Buffer.from(chunk)); });
