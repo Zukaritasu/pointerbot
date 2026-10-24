@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2022-2023 Zukaritasu
+ * Copyright (C) 2022-2026 Zukaritasu
  * 
  * his program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,24 +15,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const { Collection, REST, Routes } = require('discord.js');
+const { REST, Routes } = require('discord.js');
 
-const fs = require('node:fs');
-const path = require('node:path');
 const botenv = require('./botenv');
-const { clientId, token } = require('../config.json');
 const logger = require('../src/logger');
 
-/** ///////////// */
-
-const rest = new REST().setToken(token);
+const rest = new REST().setToken(process.env.TOKEN);
 (async () => {
     try {
         const commands = botenv.getCommandsCollection().map(value => value.data.toJSON())
         logger.INF(`Started refreshing ${commands.length} application (/) commands`)
 
         const data = await rest.put(
-            Routes.applicationCommands(clientId),
+            Routes.applicationCommands(process.env.CLIENT_ID),
             { body: commands }
         );
 

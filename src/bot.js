@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2022-2023 Zukaritasu
+ * Copyright (C) 2022-2026 Zukaritasu
  * 
  * his program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,6 @@
  */
 
 const { Client, GatewayIntentBits, ActivityType } = require('discord.js');
-const { token, uriDatabase } = require('../config.json');
 const { Db, MongoClient } = require('mongodb');
 const botenv = require('./botenv');
 const request = require('./request');
@@ -27,7 +26,7 @@ const logger = require('./logger');
 	let database = null
 
 	try {
-		database = (await (mongodb = new MongoClient(uriDatabase)).connect())
+		database = (await (mongodb = new MongoClient(process.env.URI_DATABASE)).connect())
 			.db('pointerbot')
 		logger.INF('Database connection successful!')
 	} catch (e) {
@@ -65,7 +64,7 @@ const logger = require('./logger');
 		}
 	})
 
-	client.login(token).catch((error) => {
+	client.login(process.env.TOKEN).catch((error) => {
 		logger.ERR(error);
 	}).then(() => {
 		logger.INF('Successfully Logged!');

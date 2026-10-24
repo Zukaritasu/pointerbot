@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2022-2023 Zukaritasu
+ * Copyright (C) 2022-2026 Zukaritasu
  * 
  * his program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,16 +35,26 @@ function generateSHA256(filePath) {
  */
 async function execJSFileSynch(command) {
 	return !(await new Promise((resolve, reject) => {
-		fork(command).on('exit', (code) => {
+		const child = fork(command, [], {
+			execArgv: [
+				'--env-file=.env'
+			]
+		})
+		
+		child.on('exit', (code) => {
 			if (code != 0)
 				logger.ERR(`Subprocess is terminated with code ${code}`)
 			else
 				logger.INF(`Subprocess is terminated with code 0`)
 			resolve(code != 0)
-		}).on('error', (error) => {
+		})
+		
+		child.on('error', (error) => {
 			console.error(`${error}`);
 			reject(true)
-		}).on('message', (message) => {
+		})
+		
+		child.on('message', (message) => {
 			console.log(`${message}`);
 		})
 	}))
